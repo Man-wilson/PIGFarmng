@@ -1,6 +1,13 @@
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  TouchableOpacity,
+} from "react-native";
 import React from "react";
 import { ScaledSheet } from "react-native-size-matters";
+import RNPickerSelect from "react-native-picker-select";
 
 export const LoginTextFields = ({
   Placeholder,
@@ -10,19 +17,27 @@ export const LoginTextFields = ({
   value,
   secureTextEntry,
   multiline,
+  isDropdown,
+  dropdownOptions,
 }) => {
   return (
     <View style={[styles.Input, { height: customHeight }]}>
-      <TextInput
-        placeholder={Placeholder}
-        onChange={Onchange}
-        value={value}
-        multiline={multiline}
-        style={{ height: customHeight, width: 280 }}
-        secureTextEntry={secureTextEntry}
-        keyboardType={Placeholder === "Email" ? "email-address" : "default"}
-      />
-      {icon}
+      {isDropdown ? (
+        <RNPickerSelect
+          onValueChange={Onchange}
+          items={dropdownOptions}
+          placeholder={{ label: Placeholder, value: null }}
+          style={{ ...pickerSelectStyles }}
+          useNativeAndroidPickerStyle={false}
+        />
+      ) : (
+        <TextInput
+          placeholder={Placeholder}
+          onChange={Onchange}
+          style={{ height: customHeight, flex: 1 }}
+        />
+      )}
+      <TouchableOpacity>{icon}</TouchableOpacity>
     </View>
   );
 };
@@ -40,5 +55,28 @@ const styles = ScaledSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignSelf: "center",
+  },
+});
+
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: "gray",
+    borderRadius: 4,
+    color: "black",
+    paddingRight: 30,
+  },
+  inputAndroid: {
+    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 0.5,
+    borderColor: "purple",
+    borderRadius: 8,
+    color: "black",
+    paddingRight: 30,
   },
 });

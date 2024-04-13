@@ -3,7 +3,7 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Login } from "../Screens/Login";
 import { Register } from "../Screens/Register";
-import { CreateFarm } from "../Screens/CreateFarm";
+import { MainNavigation } from "./MainNavigation";
 
 const Stack = createNativeStackNavigator();
 
@@ -16,7 +16,7 @@ export const AppNavigation = () => {
         headerShown: false,
       }}
     >
-      <Screen name="Farm" component={CreateFarm} />
+      <Screen name="HOMEE" component={MainNavigation} />
     </Navigator>
   );
 };

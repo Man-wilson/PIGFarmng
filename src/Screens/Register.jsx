@@ -29,6 +29,7 @@ import {
   Poppins_500Medium,
   Poppins_800ExtraBold,
 } from "@expo-google-fonts/poppins";
+import RNPickerSelect from "react-native-picker-select";
 
 const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
@@ -36,23 +37,57 @@ const width = Dimensions.get("window").width;
 export const Register = () => {
   let [fontsLoaded] = useFonts({ Poppins_500Medium, Poppins_800ExtraBold });
 
+  const [viewPassword, setViewPassword] = useState("");
+  const [role, setRole] = useState("");
+
   if (!fontsLoaded) {
     return null;
   }
   return (
     <SafeAreaView>
       <StatusBar style="black" backgroundColor="#3ab976" />
-      <ScrollView>
-        <View style={styles.Container}>
-          <Text style={styles.head1}>Register</Text>
-          <Text style={{ fontSize: 15, paddingLeft: 10, color: "white" }}>
-            Create your new account
-          </Text>
+      <View style={styles.Container}>
+        <Text style={styles.head1}>Register</Text>
+        <Text style={{ fontSize: 15, paddingLeft: 10, color: "white" }}>
+          Create your new account
+        </Text>
+        <ScrollView>
           <KeyboardAvoidingView>
             <View style={styles.main}>
               <LoginTextFields
+                Onchange={(value) => setRole(value)}
+                Placeholder="Choose your role please"
+                isDropdown
+                dropdownOptions={[
+                  { label: "Farmer", value: "farmer" },
+                  { label: "Govt", value: "govt" },
+                  { label: "Normal User", value: "normalUser" },
+                ]}
+                icon={
+                  <MaterialIcons
+                    name="arrow-drop-down"
+                    size={44}
+                    color="black"
+                  />
+                }
+              />
+              <LoginTextFields
                 Onchange={(text) => setTel(text)}
                 Placeholder={"Username"}
+                icon={
+                  <MaterialIcons name="contact-page" size={23} color="black" />
+                }
+              />
+              <LoginTextFields
+                Onchange={(text) => setTel(text)}
+                Placeholder={"First name"}
+                icon={
+                  <MaterialIcons name="contact-page" size={23} color="black" />
+                }
+              />
+              <LoginTextFields
+                Onchange={(text) => setTel(text)}
+                Placeholder={"Second name"}
                 icon={
                   <MaterialIcons name="contact-page" size={23} color="black" />
                 }
@@ -68,7 +103,7 @@ export const Register = () => {
                 icon={<MaterialIcons name="email" size={24} color="black" />}
               />
               <LoginTextFields
-                Onchange={""}
+                Onchange={(text) => setViewPassword(text)}
                 Placeholder={"Password"}
                 // secureTextEntry={""}
                 icon={
@@ -98,8 +133,8 @@ export const Register = () => {
               </TouchableOpacity>
             </View>
           </KeyboardAvoidingView>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };
@@ -111,7 +146,7 @@ const styles = ScaledSheet.create({
     backgroundColor: "#3ab976",
     height: height,
     width: width,
-    marginBottom: "10@s",
+    // marginBottom: "10@s",
   },
   image: {
     width: "120@s",
@@ -129,9 +164,10 @@ const styles = ScaledSheet.create({
     paddingHorizontal: "10@s",
   },
   main: {
-    borderRadius: "20@s",
+    borderTopRightRadius: "30@s",
+    borderTopLeftRadius: "30@s",
     backgroundColor: "#ffffff",
-    height: height,
+    // height: height,
     paddingVertical: "10@s",
     marginTop: "90@s",
     paddingTop: "50@s",
