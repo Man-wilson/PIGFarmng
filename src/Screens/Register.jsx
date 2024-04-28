@@ -9,6 +9,7 @@ import {
   //   Button,
   Pressable,
   Image,
+  Alert,
 } from "react-native";
 import React from "react";
 import { useState, useEffect } from "react";
@@ -30,6 +31,8 @@ import {
   Poppins_800ExtraBold,
 } from "@expo-google-fonts/poppins";
 import RNPickerSelect from "react-native-picker-select";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
+import axios from "axios";
 
 const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
@@ -39,6 +42,64 @@ export const Register = () => {
 
   const [viewPassword, setViewPassword] = useState("");
   const [role, setRole] = useState("");
+  const [userData, setUserData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    firstName: "",
+    lastName: "",
+    phoneNumber: "",
+    roleId: null,
+  });
+
+  const navigation = useNavigation();
+  // const userDataRef = useRef(userData);
+
+  const roleMappings = {
+    admin: 1,
+    pig_farmer: 2,
+    veterinarian: 3,
+    gov_official: 4,
+  };
+
+  const dropdownOptions = [
+    { label: "Admin", value: "admin" },
+    { label: "Pig Farmer", value: "pig_farmer" },
+    { label: "Veterinarian", value: "veterinarian" },
+    { label: "Gov Official", value: "gov_official" },
+  ];
+
+  // console.log("Registering user with data:", userData);
+
+  const handleInputChange = (name, value) => {
+    if (name === "roleId") {
+      value = roleMappings[value];
+    }
+    setUserData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  console.log("userData at registration:", userData);
+  const registerUser = async () => {
+    try {
+      const response = await axios.post(
+        "https://pig-farming-backend.onrender.com/api/users",
+        userData
+      );
+      if (response.status === 201) {
+        Alert.alert("Success", "User registered successfully.");
+        navigation.goBack();
+      }
+    } catch (error) {
+      console.error(
+        "Failed to register user:",
+        error.response ? error.response.data : error
+      );
+      Alert.alert("Error", "Failed to register user.");
+    }
+  };
 
   if (!fontsLoaded) {
     return null;
@@ -51,18 +112,21 @@ export const Register = () => {
         <Text style={{ fontSize: 15, paddingLeft: 10, color: "white" }}>
           Create your new account
         </Text>
-        <ScrollView>
+        <ScrollView contentContainerStyle={{ height: height }}>
           <KeyboardAvoidingView>
             <View style={styles.main}>
               <LoginTextFields
-                Onchange={(value) => setRole(value)}
+                onValueChange={(text) => handleInputChange("roleId", text)}
+                value={
+                  userData.roleId
+                    ? Object.keys(roleMappings).find(
+                        (key) => roleMappings[key] === userData.roleId
+                      )
+                    : ""
+                }
                 Placeholder="Choose your role please"
                 isDropdown
-                dropdownOptions={[
-                  { label: "Farmer", value: "farmer" },
-                  { label: "Govt", value: "govt" },
-                  { label: "Normal User", value: "normalUser" },
-                ]}
+                dropdownOptions={dropdownOptions}
                 icon={
                   <MaterialIcons
                     name="arrow-drop-down"
@@ -71,39 +135,48 @@ export const Register = () => {
                   />
                 }
               />
+
               <LoginTextFields
-                Onchange={(text) => setTel(text)}
+                OnChangeText={(text) => handleInputChange("username", text)}
+                value={userData.username}
                 Placeholder={"Username"}
                 icon={
                   <MaterialIcons name="contact-page" size={23} color="black" />
                 }
               />
               <LoginTextFields
-                Onchange={(text) => setTel(text)}
+                OnChangeText={(text) => handleInputChange("firstName", text)}
+                value={userData.firstName}
                 Placeholder={"First name"}
                 icon={
                   <MaterialIcons name="contact-page" size={23} color="black" />
                 }
               />
               <LoginTextFields
-                Onchange={(text) => setTel(text)}
+                OnChangeText={(text) => handleInputChange("lastName", text)}
+                value={userData.lastName}
                 Placeholder={"Second name"}
                 icon={
                   <MaterialIcons name="contact-page" size={23} color="black" />
                 }
               />
               <LoginTextFields
-                Onchange={(text) => setTel(text)}
+                OnChangeText={(text) => handleInputChange("phoneNumber", text)}
+                value={userData.phoneNumber}
                 Placeholder={"Mobile"}
                 icon={<FontAwesome5 name="mobile" size={24} color="black" />}
               />
               <LoginTextFields
-                Onchange={(text) => setTel(text)}
+                OnChangeText={(text) => handleInputChange("email", text)}
+                value={userData.email}
                 Placeholder={"Email address"}
                 icon={<MaterialIcons name="email" size={24} color="black" />}
               />
               <LoginTextFields
-                Onchange={(text) => setViewPassword(text)}
+                OnChange={(text) => setViewPassword(text)}
+                OnChangeText={(text) => handleInputChange("password", text)}
+                secureTextEntry={true}
+                value={userData.password}
                 Placeholder={"Password"}
                 // secureTextEntry={""}
                 icon={
@@ -123,7 +196,7 @@ export const Register = () => {
                 // loading={isLoading}
                 // text={"Sign in"}
                 icons={<AntDesign name="arrowright" size={24} color="white" />}
-                // action={handleLogin}
+                action={registerUser}
               />
               <Text style={{ fontWeight: "bold" }}>
                 Already have an account?
@@ -169,9 +242,10 @@ const styles = ScaledSheet.create({
     backgroundColor: "#ffffff",
     // height: height,
     paddingVertical: "10@s",
-    marginTop: "90@s",
+    marginTop: "20@s",
     paddingTop: "50@s",
     padding: "20@s",
+    // marginBottom: "50@s",
   },
   texts: {
     fontFamily: "Poppins_500Medium",

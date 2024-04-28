@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -18,16 +18,95 @@ import {
 import { Button } from "../Components/Buttons/Button";
 import { MaterialIcons, FontAwesome, AntDesign } from "@expo/vector-icons";
 import { RoundedButton } from "../Components/Buttons/RoundedButton";
+import { getItemAsync } from "expo-secure-store";
+import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
 
 const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
 
 export const CreateFarm = () => {
   let [fontsLoaded] = useFonts({ Poppins_500Medium, Poppins_800ExtraBold });
+  const [token, setToken] = useState();
+  const [userData, setUserData] = useState();
+  const [data, setData] = useState({
+    name: "",
+    size: "",
+    owner: "",
+    phone: "",
+    province: "",
+    district: "",
+    sector: "",
+    zipCode: "",
+    locationId: null,
+    userId: null,
+  });
 
-  if (!fontsLoaded) {
-    return null;
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    if (userData)
+      setData({
+        ...data,
+        locationId: userData.locationId,
+        userId: userData.id,
+      });
+  }, [userData]);
+
+  console.log(data, "farmmmmmmmmm");
+
+  useEffect(() => {
+    const getUser = async () => {
+      let token = await getItemAsync("token");
+      let user = await getItemAsync("logindata");
+      setToken(token);
+      setUserData(JSON.parse(user));
+    };
+
+    getUser();
+  }, []);
+
+  if (!fontsLoaded || !token) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>Loading...</Text>
+      </View>
+    );
   }
+
+  const createFarmer = async () => {
+    try {
+      const response = await axios.post(
+        "https://pig-farming-backend.onrender.com/api/farms",
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(
+        response.data,
+        "Responseeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+      );
+      if (response.status === 201) {
+        navigation.popToTop();
+
+        // navigation.reset({
+        //   index: 0,
+        //   routes: [{ name: 'FarmerHome' }],
+        // });
+      }
+    } catch (error) {
+      console.error(
+        "Failed to create farm:",
+        error.response ? error.response.data : error
+      );
+    }
+  };
+
+  // console.log(userData);
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ImageBackground
@@ -40,30 +119,87 @@ export const CreateFarm = () => {
         <ScrollView>
           <View style={styles.Container}>
             <View style={styles.textInputs}>
-              <AddTextField placeholder={"Farm name"} />
+              <AddTextField
+                placeholder={"Farm name"}
+                value={data.name}
+                onChangeText={(text) =>
+                  setData({
+                    ...data,
+                    name: text,
+                  })
+                }
+              />
             </View>
             <View style={styles.textInputs}>
-              <AddTextField placeholder={"Size of the famr"} />
+              <AddTextField
+                placeholder={"Size of the farm"}
+                value={data.size}
+                onChangeText={(text) =>
+                  setData({
+                    ...data,
+                    size: text,
+                  })
+                }
+              />
             </View>
             <View style={styles.textInputs}>
-              <AddTextField placeholder={"Owner of the Farm"} />
+              <AddTextField
+                placeholder={"Owner of the Farm"}
+                value={data.owner}
+                onChangeText={(text) => setData({ ...data, owner: text })}
+              />
             </View>
             <View style={styles.textInputs}>
-              <AddTextField placeholder={"Phone"} />
+              <AddTextField
+                placeholder={"Phone"}
+                value={data.phone}
+                onChangeText={(text) =>
+                  setData({
+                    ...data,
+                    phone: text,
+                  })
+                }
+              />
             </View>
             <View style={styles.textInputs}>
-              <AddTextField placeholder={"Province"} />
+              <AddTextField
+                placeholder={"Province"}
+                value={data.province}
+                onChangeText={(text) =>
+                  setData({
+                    ...data,
+                    province: text,
+                  })
+                }
+              />
             </View>
             <View style={styles.textInputs}>
-              <AddTextField placeholder={"District"} />
+              <AddTextField
+                placeholder={"District"}
+                value={data.district}
+                onChangeText={(text) =>
+                  setData({
+                    ...data,
+                    district: text,
+                  })
+                }
+              />
             </View>
             <View style={styles.textInputs}>
-              <AddTextField placeholder={"Sector"} />
+              <AddTextField
+                placeholder={"Sector"}
+                value={data.sector}
+                onChangeText={(text) => setData({ ...data, sector: text })}
+              />
             </View>
             <View style={styles.textInputs}>
-              <AddTextField placeholder={"Zip Code"} />
+              <AddTextField
+                placeholder={"Zip Code"}
+                value={data.zipCode}
+                onChangeText={(text) => setData({ ...data, zipCode: text })}
+              />
             </View>
-            <RoundedButton text={"register a farm"} />
+            <RoundedButton text={"register a farm"} action={createFarmer} />
           </View>
         </ScrollView>
       </ImageBackground>
@@ -88,8 +224,8 @@ const styles = ScaledSheet.create({
   },
   Title: {
     fontFamily: "Poppins_800ExtraBold",
-    fontSize: "30@s",
-    marginVertical: "30@s",
+    fontSize: "25@s",
+    marginVertical: "10@s",
     alignSelf: "center",
   },
   textInputs: {

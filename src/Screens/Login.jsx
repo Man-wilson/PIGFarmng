@@ -9,6 +9,7 @@ import {
   //   Button,
   Pressable,
   Image,
+  Alert,
 } from "react-native";
 import React from "react";
 import { useState, useEffect } from "react";
@@ -23,6 +24,10 @@ import {
   Poppins_500Medium,
   Poppins_800ExtraBold,
 } from "@expo-google-fonts/poppins";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
+import { loginUser } from "../Features/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
 
 const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
@@ -33,74 +38,105 @@ export const Login = () => {
     Poppins_800ExtraBold,
   });
 
-  const [tel, setTel] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [viewPassword, setViewPassword] = useState(true);
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const isLoading = useSelector((state) => state.authentication.isLoading);
+  const isLoggedIn = useSelector((state) => state.authentication.isLoggedIn);
+  const error = useSelector((state) => state.authentication.error);
 
-  if (!fontsLoaded) {
-    return null;
-  }
+  const handleForgotPassword = () => {
+    // Navigate to the Forgot Password Screen
+    navigation.navigate("ForgotPassword");
+  };
+
+  const handleSignUp = () => {
+    navigation.navigate("Signup");
+  };
+
+  const handleLogin = () => {
+    if (!username || !password) {
+      Alert.alert("Validation", "Please enter both username and password.");
+      return;
+    }
+    dispatch(loginUser({ username, password }))
+      .then(() => {
+        setUsername("");
+        setPassword("");
+      })
+      .catch((error) => {
+        console.error("Login failed:", error);
+      });
+  };
 
   return (
     <SafeAreaView>
       <StatusBar style="black" backgroundColor="#3ab976" />
-      <ScrollView>
-        <View style={styles.Container}>
-          <View>
-            {/* <Image
+      <View style={styles.Container}>
+        <View>
+          {/* <Image
               style={styles.image}
               source={require("../../assets/PIG FARMING Icon2 (1).png")}
             /> */}
-          </View>
-          <Text style={styles.head1}>Sign in</Text>
-          {/* <Text>Please sign in to continue</Text> */}
+        </View>
+        <Text style={styles.head1}>Sign in</Text>
+        {/* <Text>Please sign in to continue</Text> */}
+        <ScrollView>
           <KeyboardAvoidingView>
             <View style={styles.main}>
               {/* <Text style={styles.texts}>Sign in</Text> */}
               <LoginTextFields
-                Onchange={(text) => setTel(text)}
-                Placeholder={"email-address"}
-                icon={
-                  <MaterialIcons name="contact-page" size={23} color="black" />
-                }
+                OnChangeText={setUsername}
+                Placeholder="Username"
+                icon={<MaterialIcons name="person" size={24} color="black" />}
+                value={username}
               />
-              {/* <Text style={styles.texts}>Password</Text> */}
+
               <LoginTextFields
-                Onchange={(text) => setPassword(text)}
-                Placeholder={"Enter your password"}
+                OnChangeText={setPassword}
+                Placeholder="Password"
                 secureTextEntry={viewPassword}
+                value={password}
                 icon={
                   <TouchableOpacity
                     onPress={() => setViewPassword(!viewPassword)}
                   >
-                    <FontAwesome name="eye" size={23} color="black" />
+                    <FontAwesome name="eye" size={24} color="black" />
                   </TouchableOpacity>
                 }
               />
-              <View
-                style={{
-                  marginVertical: 10,
-                }}
-              ></View>
-              <View style={styles.forgotpswd}>
-                <TouchableOpacity>
-                  <Text style={styles.forgotPswddText}>Forgot Password?</Text>
-                </TouchableOpacity>
-              </View>
-              <Button
-                // loading={isLoading}
-                // text={"Sign in"}
-                icons={<AntDesign name="arrowright" size={24} color="white" />}
-                // action={handleLogin}
-              />
-              <Text style={{ fontWeight: "bold" }}>Don't have an account?</Text>
-              <TouchableOpacity>
-                <Text style={styles.forgotPswddText}>Register</Text>
+              {error && (
+                <Text style={styles.errorText}>
+                  {error.message || "An unknown error occurred"}
+                </Text>
+              )}
+              <TouchableOpacity
+                onPress={handleForgotPassword}
+                style={styles.forgotPassword}
+              >
+                <Text style={styles.forgotPasswordText}>Forgot Password ?</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={handleLogin}
+                disabled={isLoading}
+              >
+                <Text style={styles.buttonText}>
+                  {" "}
+                  {isLoading ? "Logging in..." : "Login"}{" "}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleSignUp} style={styles.signUp}>
+                <Text style={styles.signUpText}>
+                  Don't have an account? {""} Sign Up
+                </Text>
               </TouchableOpacity>
             </View>
           </KeyboardAvoidingView>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };
@@ -149,6 +185,17 @@ const styles = ScaledSheet.create({
     marginBottom: "20@s",
     alignSelf: "flex-end",
   },
+  buttonContainer: {
+    alignItems: "center",
+  },
+  button: {
+    backgroundColor: "#3ab976",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginTop: 20,
+    alignItems: "center",
+  },
   forgotPswddTexts: {
     fontSize: "18@s",
     fontFamily: "Poppins_500Medium",
@@ -157,5 +204,34 @@ const styles = ScaledSheet.create({
     color: "crimson",
     fontFamily: "Poppins_800ExtraBold",
     fontSize: "16@s",
+  },
+
+  forgotPassword: {
+    marginTop: "15@s",
+    alignItems: "center",
+  },
+  forgotPasswordText: {
+    color: "crimson",
+    fontSize: "16@s",
+    fontFamily: "Poppins_800ExtraBold",
+  },
+  signUp: {
+    marginTop: "40@s",
+    alignItems: "center",
+  },
+  signUpText: {
+    color: "crimson",
+    fontSize: "16@s",
+    fontFamily: "Poppins_800ExtraBold",
+  },
+
+  buttonText: {
+    color: "white",
+    fontWeight: "bold",
+  },
+  errorText: {
+    color: "red",
+    textAlign: "center",
+    marginTop: "10@s",
   },
 });

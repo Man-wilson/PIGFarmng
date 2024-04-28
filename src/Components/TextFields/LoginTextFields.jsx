@@ -13,18 +13,19 @@ export const LoginTextFields = ({
   Placeholder,
   icon,
   customHeight,
-  Onchange,
+  OnChangeText,
   value,
   secureTextEntry,
   multiline,
   isDropdown,
   dropdownOptions,
+  onValueChange,
 }) => {
   return (
     <View style={[styles.Input, { height: customHeight }]}>
       {isDropdown ? (
         <RNPickerSelect
-          onValueChange={Onchange}
+          onValueChange={onValueChange}
           items={dropdownOptions}
           placeholder={{ label: Placeholder, value: null }}
           style={{ ...pickerSelectStyles }}
@@ -33,8 +34,11 @@ export const LoginTextFields = ({
       ) : (
         <TextInput
           placeholder={Placeholder}
-          onChange={Onchange}
+          onChangeText={OnChangeText}
           style={{ height: customHeight, flex: 1 }}
+          secureTextEntry={secureTextEntry}
+          value={value}
+          multiline={multiline}
         />
       )}
       <TouchableOpacity>{icon}</TouchableOpacity>
