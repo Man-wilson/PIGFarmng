@@ -14,6 +14,9 @@ import * as SecureStore from "expo-secure-store";
 import { getItemAsync, setItemAsync } from "expo-secure-store";
 import { loginSuccess } from "../Features/authSlice";
 import { Home } from "../Screens/Home";
+import { VetProfile } from "../Screens/Veterinary/VetProfile";
+import { Notifications } from "../Screens/Veterinary/Notifications";
+import { HealthRecords } from "../Screens/Veterinary/HealthRecords";
 // import { tokenStore } from "../Features/authSlice";
 
 const Stack = createNativeStackNavigator();
@@ -77,7 +80,7 @@ export const AppNavigation = () => {
         <Screen name="HOME" component={MainNavigation} />
       ) : (
         <>
-          <Screen name="Login" component={Home} />
+          <Screen name="Login" component={HealthRecords} />
           <Screen name="Signup" component={Register} />
         </>
       )}

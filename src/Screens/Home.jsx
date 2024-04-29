@@ -7,7 +7,7 @@ import {
   Image,
 } from "react-native";
 import React from "react";
-import { ScaledSheet } from "react-native-size-matters";
+import { ScaledSheet, s } from "react-native-size-matters";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { StatusBar } from "expo-status-bar";
@@ -17,6 +17,7 @@ import {
   Poppins_400Regular,
   Poppins_800ExtraBold,
 } from "@expo-google-fonts/poppins";
+import { Ionicons, FontAwesome6 } from "@expo/vector-icons";
 import { CreateFarm } from "./CreateFarm";
 import { Login } from "./Login";
 import { FarmerHome } from "./FarmerHome";
@@ -38,57 +39,61 @@ export const Home = () => {
   }
   return (
     <SafeAreaView>
-      <StatusBar style="black" backgroundColor="#28b266" />
-      <View style={{ backgroundColor: "#ffffff" }}>
-        {/* <Image
-          style={styles.imageStyling}
-          source={require("../../assets/PIG FARMING (1).png")}
-        /> */}
+      <StatusBar style="light" backgroundColor="#28b266" />
+      <View style={{ backgroundColor: "#28b266", padding: 10 }}>
+        <View style={styles.profileContainer}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Image
+              style={styles.imageStyling}
+              source={require("../../assets/doctor.png")}
+            />
+            <Text style={styles.names}>Hi My Arsenal</Text>
+          </View>
+          <Ionicons
+            style={styles.icon}
+            name="notifications-outline"
+            size={30}
+            color="#ffffff"
+          />
+        </View>
         <CustomCalendar />
       </View>
       <View style={styles.container}>
-        <ScrollView contentContainerStyle={styles.scrollViewContent}>
-          <View style={styles.homeView}>
-            <View style={styles.insideHome}>
-              <HomeContainer
-                imageSource={require("../../assets/3d.jpg")}
-                title="New born pigs"
-                description="Gasabo-Kimironko"
-                number="+250785161514"
-              />
+        <View style={styles.containerUpdates}>
+          <View style={styles.insideUpdates}>
+            <View>
+              <FontAwesome6 name="user-doctor" size={44} color="#f0f1f4" />
             </View>
-            <View style={styles.insideHome}>
-              <HomeContainer
-                imageSource={require("../../assets/3d.jpg")}
-                title="New born pigs"
-                description="Gasabo-Kimironko"
-                number="+250785161514"
-              />
+            <View style={styles.containerTexts}>
+              <Text style={styles.texts}>Keep it up</Text>
+              <Text style={styles.texts}>You're doing good work...</Text>
             </View>
           </View>
-          <View style={styles.homeView}>
-            <View style={styles.insideHome}>
-              <HomeContainer
-                imageSource={require("../../assets/3d.jpg")}
-                title="New born pigs"
-                description="Gasabo-Kimironko"
-                number="+250785161514"
-              />
+          <View style={styles.lowerUpdates}>
+            <View>
+              <Text style={styles.lowerTexts}>Total Tasks</Text>
+              <Text style={styles.numberTasks}>4</Text>
             </View>
-            <View style={styles.insideHome}>
-              <HomeContainer
-                imageSource={require("../../assets/3d.jpg")}
-                title="New born pigs"
-                description="Gasabo-Kimironko"
-                number="+250785161514"
-              />
+            <View style={styles.separator}></View>
+            <View>
+              <Text style={styles.lowerTexts}>Completed Tasks</Text>
+              <Text style={styles.numberTasks}>14</Text>
             </View>
           </View>
+        </View>
+        <Text style={styles.heading}>Tasks</Text>
+        <ScrollView horizontal>
           <View style={styles.homeView}>
             <View style={styles.insideHome}>
               <HomeContainer
                 imageSource={require("../../assets/3d.jpg")}
-                title="New born pigs"
+                title="CMU-Africa Ltd"
                 description="Gasabo-Kimironko"
                 number="+250785161514"
               />
@@ -96,17 +101,7 @@ export const Home = () => {
             <View style={styles.insideHome}>
               <HomeContainer
                 imageSource={require("../../assets/3d.jpg")}
-                title="New born pigs"
-                description="Gasabo-Kimironko"
-                number="+250785161514"
-              />
-            </View>
-          </View>
-          <View style={styles.homeView}>
-            <View style={styles.insideHome}>
-              <HomeContainer
-                imageSource={require("../../assets/3d.jpg")}
-                title="New born pigs"
+                title="Green Pig farming Ltd"
                 description="Gasabo-Kimironko"
                 number="+250785161514"
               />
@@ -114,17 +109,7 @@ export const Home = () => {
             <View style={styles.insideHome}>
               <HomeContainer
                 imageSource={require("../../assets/3d.jpg")}
-                title="New born pigs"
-                description="Gasabo-Kimironko"
-                number="+250785161514"
-              />
-            </View>
-          </View>
-          <View style={styles.homeView}>
-            <View style={styles.insideHome}>
-              <HomeContainer
-                imageSource={require("../../assets/3d.jpg")}
-                title="New born pigs"
+                title="Pig selling company Ltd"
                 description="Gasabo-Kimironko"
                 number="+250785161514"
               />
@@ -132,7 +117,7 @@ export const Home = () => {
             <View style={styles.insideHome}>
               <HomeContainer
                 imageSource={require("../../assets/3d.jpg")}
-                title="New born pigs"
+                title="DPSD Company Ltd"
                 description="Gasabo-Kimironko"
                 number="+250785161514"
               />
@@ -147,7 +132,7 @@ export const Home = () => {
 const styles = ScaledSheet.create({
   container: {
     margin: "0@s",
-    padding: "10@s",
+    paddingHorizontal: "10@s",
     backgroundColor: "#ffffff",
     height: height,
     width: width,
@@ -155,19 +140,83 @@ const styles = ScaledSheet.create({
   },
   homeView: {
     flexDirection: "row",
-    justifyContent: "space-between",
   },
   insideHome: {
     // margin: "5@s",
-    width: "160@s",
+    // width: "200@s",
+    // height: "200@s",
+    paddingRight: "10@s",
   },
   scrollViewContent: {
     paddingBottom: "140@s",
   },
   imageStyling: {
-    width: "80@s",
-    height: "80@s",
-    alignSelf: "center",
+    width: "50@s",
+    height: "50@s",
+    borderRadius: "50@s",
+    // alignSelf: "center",
     // backgroundColor: "#ffffff",
+  },
+  profileContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  names: {
+    marginHorizontal: "10@s",
+    fontSize: "16@s",
+    fontFamily: "Poppins_800ExtraBold",
+  },
+  icon: {
+    borderRadius: "50@s",
+    borderWidth: "2@s",
+    borderColor: "#FFFFFF",
+    textAlign: "center",
+    padding: "3@s",
+  },
+  containerUpdates: {
+    marginVertical: "10@s",
+    borderRadius: "10@s",
+    backgroundColor: "#28b266",
+  },
+  insideUpdates: {
+    padding: "20@s",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  containerTexts: {
+    marginHorizontal: "20@s",
+  },
+  texts: {
+    fontSize: "15@s",
+    fontFamily: "Poppins_400Regular",
+    color: "#f0f1f4",
+    fontWeight: "bold",
+  },
+  lowerUpdates: {
+    paddingHorizontal: "20@s",
+    paddingBottom: "20@s",
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  lowerTexts: {
+    fontSize: "16@s",
+    fontFamily: "Poppins_800ExtraBold",
+    color: "#000000",
+  },
+  numberTasks: {
+    fontSize: "14@s",
+    fontFamily: "Poppins_800ExtraBold",
+    color: "#f0f1f4",
+    textAlign: "center",
+  },
+  separator: {
+    height: "50@s",
+    width: "2@s",
+    backgroundColor: "#dddddd",
+  },
+  heading: {
+    fontSize: "16@s",
+    fontFamily: "Poppins_800ExtraBold",
   },
 });

@@ -90,7 +90,7 @@ export const CustomCalendar = () => {
 const styles = StyleSheet.create({
   container: {
     paddingTop: 50,
-    backgroundColor: "#fff",
+    backgroundColor: "#28b266",
     alignItems: "center",
   },
   header: {
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   },
   dateContainer: {
     alignItems: "center",
-    padding: 10,
+    paddingVertical: 18,
     width: "12.28%", // Divide by 7 to get equal width for each day
     marginHorizontal: 3, // Add space between day containers
     borderRadius: 10, // Round the corners of the day containers
@@ -115,11 +115,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between", // Adjusted for spacing between day containers
     width: "100%",
-    backgroundColor: "#f0f0f0",
+    backgroundColor: "#28b266",
     paddingVertical: 5, // Padding top and bottom inside the week row container
   },
   selectedDay: {
-    backgroundColor: "green",
+    backgroundColor: "#5a72f6",
   },
   normalDay: {
     backgroundColor: "lightgray",
