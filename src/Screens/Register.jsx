@@ -105,14 +105,14 @@ export const Register = () => {
     return null;
   }
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.safeArea}>
       <StatusBar style="black" backgroundColor="#3ab976" />
       <View style={styles.Container}>
         <Text style={styles.head1}>Register</Text>
         <Text style={{ fontSize: 15, paddingLeft: 10, color: "white" }}>
           Create your new account
         </Text>
-        <ScrollView contentContainerStyle={{ height: height }}>
+        <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <KeyboardAvoidingView>
             <View style={styles.main}>
               <LoginTextFields
@@ -213,12 +213,24 @@ export const Register = () => {
 };
 
 const styles = ScaledSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#dbdcde",
+  },
+  // main: {
+  //   padding: "10@s",
+  // },
+  scrollViewContent: {
+    // paddingBottom: "10@s",
+  },
   Container: {
     margin: "0@s",
     padding: "0@s",
     backgroundColor: "#3ab976",
     height: height,
     width: width,
+    flex: 1,
+
     // marginBottom: "10@s",
   },
   image: {

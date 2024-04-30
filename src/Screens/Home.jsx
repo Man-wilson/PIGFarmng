@@ -5,8 +5,9 @@ import {
   Dimensions,
   ScrollView,
   Image,
+  TouchableOpacity,
 } from "react-native";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { ScaledSheet, s } from "react-native-size-matters";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -23,6 +24,9 @@ import { Login } from "./Login";
 import { FarmerHome } from "./FarmerHome";
 import { HomeContainer } from "../Components/Containers/HomeContainer";
 import { CustomCalendar } from "../Components/Callender/CustomCalender";
+import { useNavigation } from "@react-navigation/native";
+import { getItemAsync } from "expo-secure-store";
+import axios from "axios";
 
 const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
@@ -33,6 +37,27 @@ export const Home = () => {
     Poppins_800ExtraBold,
     Poppins_400Regular,
   });
+
+  const [token, setToken] = useState();
+  const [userData, setUserData] = useState();
+  const [farm, setFarm] = useState();
+
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    const getUser = async () => {
+      const tokenStored = await getItemAsync("token");
+      const userDataStored = await getItemAsync("logindata");
+      if (userDataStored) {
+        setUserData(JSON.parse(userDataStored));
+      }
+      setToken(tokenStored);
+    };
+
+    getUser();
+  }, []);
+
+  // console.log(userData);
 
   if (!fontsLoaded) {
     return null;
@@ -53,14 +78,21 @@ export const Home = () => {
               style={styles.imageStyling}
               source={require("../../assets/doctor.png")}
             />
-            <Text style={styles.names}>Hi My Arsenal</Text>
+            <Text style={styles.names}>
+              <Text style={styles.hiStyle}>Hi </Text>
+              {userData.firstName} {userData.lastName}{" "}
+            </Text>
           </View>
-          <Ionicons
-            style={styles.icon}
-            name="notifications-outline"
-            size={30}
-            color="#ffffff"
-          />
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Notifications")}
+          >
+            <Ionicons
+              style={styles.icon}
+              name="notifications-outline"
+              size={30}
+              color="#ffffff"
+            />
+          </TouchableOpacity>
         </View>
         <CustomCalendar />
       </View>
@@ -164,9 +196,17 @@ const styles = ScaledSheet.create({
   },
   names: {
     marginHorizontal: "10@s",
-    fontSize: "16@s",
+    fontSize: "18@s",
     fontFamily: "Poppins_800ExtraBold",
+    color: "#ffffff",
   },
+  hiStyle: {
+    color: "black",
+    fontSize: "30@s",
+    fontFamily: "Poppins_400Regular",
+    // fontWeight: 'bold',
+  },
+
   icon: {
     borderRadius: "50@s",
     borderWidth: "2@s",

@@ -2,24 +2,42 @@ import React from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { ScaledSheet } from "react-native-size-matters";
+import {
+  useFonts,
+  Poppins_500Medium,
+  Poppins_400Regular,
+  Poppins_800ExtraBold,
+} from "@expo-google-fonts/poppins";
 
 export const HealthRecord = ({ record }) => {
+  let [fontsLoaded] = useFonts({
+    Poppins_500Medium,
+    Poppins_800ExtraBold,
+    Poppins_400Regular,
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
   return (
-    <View style={styles.recordContainer}>
-      <Image
-        source={require("../../../assets/doctor.png")}
-        style={styles.image}
-      />
-      <View style={styles.recordContent}>
-        <Text style={styles.dateText}>{record.date}</Text>
-        <Text style={styles.descriptionText}>{record.description}</Text>
-        <Text style={styles.treatmentText}>{record.treatment}</Text>
-        <Text style={styles.pigIdText}>Pig ID: {record.pigId}</Text>
+    <TouchableOpacity>
+      <View style={styles.recordContainer}>
+        <Image
+          source={require("../../../assets/doctor.png")}
+          style={styles.image}
+        />
+        <View style={styles.recordContent}>
+          <Text style={styles.nameText}>{record.name}</Text>
+          <Text style={styles.descriptionText}>{record.description}</Text>
+          <Text style={styles.treatmentText}>{record.treatment}</Text>
+          <Text style={styles.pigIdText}>Pig ID: {record.pigId}</Text>
+          <Text style={styles.dateText}>{record.date}</Text>
+        </View>
+        <TouchableOpacity>
+          <Ionicons name="information-circle-outline" size={34} color="black" />
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity>
-        <Ionicons name="information-circle-outline" size={34} color="black" />
-      </TouchableOpacity>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -46,6 +64,11 @@ const styles = ScaledSheet.create({
   recordContent: {
     flex: "1@s",
     paddingLeft: "10@s",
+  },
+  nameText: {
+    fontSize: "14@s",
+    color: "#000000",
+    fontFamily: "Poppins_800ExtraBold",
   },
   dateText: {
     fontSize: "16@s",

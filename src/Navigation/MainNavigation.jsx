@@ -19,11 +19,22 @@ import { Login } from "../Screens/Login";
 import { CreateFarm } from "../Screens/CreateFarm";
 import { Profile } from "../Screens/Profile";
 import { Farm } from "../Screens/Farm";
+import { useSelector } from "react-redux";
+import { Onboarding1 } from "../Screens/Onboardind1";
+import { Notifications } from "../Screens/Veterinary/Notifications";
+import { HealthRecords } from "../Screens/Veterinary/HealthRecords";
+import { VetProfile } from "../Screens/Veterinary/VetProfile";
+import { CreateHealthRecords } from "../Screens/Veterinary/CreateHealthRecords";
 
 const Tabs = createBottomTabNavigator();
 const { Navigator, Screen } = Tabs;
 
 export const MainNavigation = () => {
+  const userData = useSelector((state) => state.authentication.userData);
+  // console.log(userData, "user dataaaaaaaaaaaaaaaaaa");
+  const { roleId } = userData;
+  // console.log(roleId, "user roleeeeee");
+
   return (
     <Navigator
       initialRouteName="Home"
@@ -67,7 +78,9 @@ export const MainNavigation = () => {
           },
         }}
         name="FarmerHome"
-        component={FarmerHome}
+        component={
+          roleId === 2 ? FarmerHome : roleId === 3 ? Home : Onboarding1
+        }
       />
       <Screen
         options={{
@@ -79,7 +92,9 @@ export const MainNavigation = () => {
           },
         }}
         name="Farm"
-        component={Farm}
+        component={
+          roleId === 2 ? Farm : roleId === 3 ? CreateHealthRecords : Onboarding1
+        }
       />
       <Screen
         options={{
@@ -96,7 +111,9 @@ export const MainNavigation = () => {
           },
         }}
         name="Vetz"
-        component={Veterinary}
+        component={
+          roleId === 2 ? Veterinary : roleId === 3 ? HealthRecords : Onboarding1
+        }
       />
       <Screen
         options={{
@@ -113,7 +130,9 @@ export const MainNavigation = () => {
           },
         }}
         name="Profile"
-        component={Profile}
+        component={
+          roleId === 2 ? Profile : roleId === 3 ? VetProfile : Onboarding1
+        }
       />
     </Navigator>
   );

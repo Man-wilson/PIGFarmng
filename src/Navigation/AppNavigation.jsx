@@ -17,6 +17,15 @@ import { Home } from "../Screens/Home";
 import { VetProfile } from "../Screens/Veterinary/VetProfile";
 import { Notifications } from "../Screens/Veterinary/Notifications";
 import { HealthRecords } from "../Screens/Veterinary/HealthRecords";
+import { CreateFarm } from "../Screens/CreateFarm";
+import { Details } from "../Screens/Details";
+import { EditDetails } from "../Screens/EditDetails";
+import { Farm } from "../Screens/Farm";
+import { FarmerHome } from "../Screens/FarmerHome";
+import { Pigs } from "../Screens/Pigs";
+import { Profile } from "../Screens/Profile";
+import { Security } from "../Screens/Security";
+import { Veterinary } from "../Screens/Veterinary";
 // import { tokenStore } from "../Features/authSlice";
 
 const Stack = createNativeStackNavigator();
@@ -77,10 +86,25 @@ export const AppNavigation = () => {
           />
         </>
       ) : isLoggedIn ? (
-        <Screen name="HOME" component={MainNavigation} />
+        <>
+          <Screen name="Main" component={MainNavigation} />
+          <Screen name="HealthRecords" component={HealthRecords} />
+          <Screen name="Notifications" component={Notifications} />
+          <Screen name="VetProfile" component={VetProfile} />
+          <Screen name="CreateFarm" component={CreateFarm} />
+          <Screen name="Details" component={Details} />
+          <Screen name="EditDeatils" component={EditDetails} />
+          <Screen name="Farm" component={Farm} />
+          <Screen name="FarmerHome" component={FarmerHome} />
+          <Screen name="Home" component={Home} />
+          <Screen name="Pigs" component={Pigs} />
+          <Screen name="Profile" component={Profile} />
+          <Screen name="Security" component={Security} />
+          <Screen name="Veterinary" component={Veterinary} />
+        </>
       ) : (
         <>
-          <Screen name="Login" component={HealthRecords} />
+          <Screen name="Login" component={Login} />
           <Screen name="Signup" component={Register} />
         </>
       )}
