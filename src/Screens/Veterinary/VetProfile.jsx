@@ -31,6 +31,9 @@ import {
 import { Details } from "../Details";
 import { EditDetails } from "../EditDetails";
 import { Security } from "../Security";
+import axios from "axios";
+import { getItemAsync } from "expo-secure-store";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
@@ -44,6 +47,28 @@ export const VetProfile = () => {
     Poppins_400Regular,
     Poppins_800ExtraBold,
   });
+
+  const [token, setToken] = useState();
+  const [userData, setUserData] = useState();
+
+  useEffect(() => {
+    const getUser = async () => {
+      const tokenStored = await getItemAsync("token");
+      const storedUserData = await getItemAsync("logindata");
+      if (tokenStored) {
+        setUserData(JSON.parse(storedUserData));
+      }
+      setToken(tokenStored);
+    };
+
+    // console.log(userData);
+
+    getUser();
+  }, []);
+
+  if (!userData) {
+    return <Text>Loading user data...</Text>;
+  }
 
   if (!fontsLoaded) {
     return null;
@@ -61,7 +86,10 @@ export const VetProfile = () => {
           />
         </View>
         <View style={styles.NamesSection}>
-          <Text style={styles.names}>MANUDI Vladimir</Text>
+          <Text style={styles.names}>
+            {" "}
+            {userData?.firstName} {userData?.lastName}{" "}
+          </Text>
         </View>
         <View
           style={{

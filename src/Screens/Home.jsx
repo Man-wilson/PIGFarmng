@@ -57,6 +57,10 @@ export const Home = () => {
     getUser();
   }, []);
 
+  if (!userData) {
+    return <Text>Loading user data...</Text>;
+  }
+
   // console.log(userData);
 
   if (!fontsLoaded) {
@@ -80,7 +84,7 @@ export const Home = () => {
             />
             <Text style={styles.names}>
               <Text style={styles.hiStyle}>Hi </Text>
-              {userData.firstName} {userData.lastName}{" "}
+              {userData?.firstName} {userData?.lastName}{" "}
             </Text>
           </View>
           <TouchableOpacity

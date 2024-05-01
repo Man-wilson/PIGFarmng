@@ -5,7 +5,7 @@ import {
   View,
   TouchableOpacity,
 } from "react-native";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { ScaledSheet } from "react-native-size-matters";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -17,6 +17,7 @@ import {
 import { useDispatch } from "react-redux";
 import { logoutUser } from "../Features/authSlice";
 import { RoundedButton } from "../Components/Buttons/RoundedButton";
+import { getItemAsync } from "expo-secure-store";
 
 const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").height;
@@ -28,10 +29,31 @@ export const Details = () => {
     Poppins_800ExtraBold,
   });
 
+  const [token, setToken] = useState();
+  const [userData, setUserData] = useState();
+
+  useEffect(() => {
+    const getUser = async () => {
+      const storedToken = await getItemAsync("token");
+      const storedUserData = await getItemAsync("logindata");
+
+      if (storedToken) {
+        setUserData(JSON.parse(storedUserData));
+      }
+      setToken(storedToken);
+    };
+
+    getUser();
+  }, []);
+
   const dispatch = useDispatch();
   const handleLogout = () => {
     dispatch(logoutUser());
   };
+
+  if (!userData) {
+    return <Text>Loading user data...</Text>;
+  }
 
   if (!fontsLoaded) {
     return null;
@@ -41,15 +63,18 @@ export const Details = () => {
       <View style={styles.main}>
         <View style={styles.content}>
           <Text style={styles.headings}>Names</Text>
-          <Text style={styles.texts}>MANUDI Vladimir</Text>
+          <Text style={styles.texts}>
+            {" "}
+            {userData?.firstName} {userData?.lastName}{" "}
+          </Text>
         </View>
         <View style={styles.content}>
           <Text style={styles.headings}>Telephone</Text>
-          <Text style={styles.texts}>250785161514</Text>
+          <Text style={styles.texts}> {userData?.phoneNumber} </Text>
         </View>
         <View style={styles.content}>
           <Text style={styles.headings}>Email</Text>
-          <Text style={styles.texts}>manudivlad@gmail.com</Text>
+          <Text style={styles.texts}> {userData?.email} </Text>
         </View>
         <TouchableOpacity>
           <RoundedButton text={"Logout"} action={handleLogout} />

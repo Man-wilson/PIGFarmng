@@ -41,10 +41,15 @@ export const VetsComponent = ({
           <Text style={styles.description}>{description}</Text>
           <Text style={styles.number}>{phoneNumber}</Text>
         </View>
+        <View>
+          <TouchableOpacity onPress={handleCallPress} style={styles.callButton}>
+            <Text style={styles.callText}>Call Me</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.callButton}>
+            <Text style={styles.callText}>Notify Me</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      <TouchableOpacity onPress={handleCallPress} style={styles.callButton}>
-        <Text style={styles.callText}>Call Me</Text>
-      </TouchableOpacity>
     </View>
   );
 };
@@ -60,11 +65,12 @@ const styles = StyleSheet.create({
   content: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
   },
   image: {
-    width: 80,
-    height: 80,
-    borderRadius: 10,
+    width: 60,
+    height: 60,
+    borderRadius: 50,
   },
   detailsContainer: {
     flex: 1,
@@ -76,7 +82,8 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 14,
-    color: "#888",
+    color: "#888888",
+    paddingVertical: 5,
   },
   number: {
     fontSize: 10,

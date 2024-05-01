@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Dimensions, ScrollView, Button } from "react-native";
 import { VetsComponent } from "../Components/Containers/VetsComponent";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -13,6 +13,7 @@ import {
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import { logoutUser } from "../Features/authSlice";
+import { getItemAsync } from "expo-secure-store";
 
 const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
@@ -24,6 +25,52 @@ export const Veterinary = () => {
     Poppins_800ExtraBold,
   });
 
+  const [users, setUsers] = useState([]);
+  const [token, setToken] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const storedToken = await getItemAsync("token");
+        setToken(storedToken);
+
+        if (!storedToken) {
+          console.error("No token found, authorization required.");
+          setIsLoading(false);
+          return;
+        }
+
+        const response = await axios.get(
+          "https://pig-farming-backend.onrender.com/api/users/role/3",
+          {
+            headers: { Authorization: `Bearer ${storedToken}` },
+          }
+        );
+        setUsers(response.data);
+      } catch (error) {
+        console.error(
+          "Failed to fetch users:",
+          error.response ? error.response.data : error.message
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <View>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+
+  // console.log(userData);
+
   if (!fontsLoaded) {
     return null;
   }
@@ -34,46 +81,20 @@ export const Veterinary = () => {
       <View style={styles.container}>
         <Text style={styles.vetHeader}>Choose Your Desired Veterinary</Text>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
-          <View style={{ marginVertical: 10 }}>
-            <VetsComponent
-              imageUrl={require("../../assets/doctor.png")}
-              title="Mandela Yann"
-              description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-              phoneNumber="0785161514"
-            />
-          </View>
-          <View style={{ marginVertical: 10 }}>
-            <VetsComponent
-              imageUrl={require("../../assets/vet.jpg")}
-              title="Michael Wilson"
-              description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-              phoneNumber="0785161514"
-            />
-          </View>
-          <View style={{ marginVertical: 10 }}>
-            <VetsComponent
-              imageUrl={require("../../assets/doctor.png")}
-              title="Vladmir Wilson"
-              description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-              phoneNumber="0785161514"
-            />
-          </View>
-          <View style={{ marginVertical: 10 }}>
-            <VetsComponent
-              imageUrl={require("../../assets/vet.jpg")}
-              title="DPSD Project"
-              description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-              phoneNumber="0785161514"
-            />
-          </View>
-          <View style={{ marginVertical: 10 }}>
-            <VetsComponent
-              imageUrl={require("../../assets/doctor.png")}
-              title="Micheal Yann"
-              description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-              phoneNumber="0785161514"
-            />
-          </View>
+          {users.map((vet, index) => (
+            <View key={index} style={{ marginVertical: 10 }}>
+              <VetsComponent
+                imageUrl={
+                  vet.imageUrl
+                    ? { uri: vet.imageUrl }
+                    : require("../../assets/doctor.png")
+                }
+                title={`${vet.firstName} ${vet.lastName}`}
+                description={vet.phoneNumber}
+                phoneNumber={vet.phoneNumber}
+              />
+            </View>
+          ))}
         </ScrollView>
       </View>
     </SafeAreaView>

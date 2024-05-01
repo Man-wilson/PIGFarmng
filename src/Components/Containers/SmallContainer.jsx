@@ -48,7 +48,7 @@ const styles = ScaledSheet.create({
   },
   text: {
     flex: 1, // Takes remaining space
-    marginLeft: "10@s",
+    // marginLeft: "10@s",
     fontSize: "16@s",
     textAlign: "center",
     fontFamily: "Poppins_800ExtraBold",

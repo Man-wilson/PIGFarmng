@@ -95,6 +95,14 @@ export const FarmerHome = ({ route }) => {
   const [token, setToken] = useState();
   const [userData, setUserData] = useState();
   const [farm, setFarm] = useState();
+  const [farmId, setFarmId] = useState(null);
+  const [totalPigs, setTotalPigs] = useState(0);
+  const [sickPigs, setSickPigs] = useState(0);
+  const [boughtPigs, setBoughtPigs] = useState(0);
+  const [deadPigs, setDeadPigs] = useState(0);
+  const [marketReadyPigs, setMarketReadyPigs] = useState(0);
+  const [newbornPigs, setNewbornPigs] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   let [fontsLoaded] = useFonts({
     Poppins_500Medium,
@@ -144,7 +152,7 @@ export const FarmerHome = ({ route }) => {
   //   getFarm();
   // }, [userData, token]);
 
-  // console.log(userData, "+++++++++++++++++++++++++++++++");
+  // console.log(farm, "+++++++++++++++++++++++++++++++");
 
   useEffect(() => {
     const getFarm = async () => {
@@ -160,9 +168,10 @@ export const FarmerHome = ({ route }) => {
           );
           if (response.data && response.data.length > 0) {
             setFarm(response.data[0]);
-            console.log(response.data[0], "Farm information");
+            setFarmId(response.data[0].id);
+            // console.log(response.data[0].id, "Farm information");
           } else {
-            console.log("No farms found for the user.");
+            console.log("No farm found for the user.");
           }
         } catch (error) {
           console.error(
@@ -177,8 +186,61 @@ export const FarmerHome = ({ route }) => {
     }
   }, [userData, token]);
 
-  if (!userData) {
-    return <Text>Loading user data...</Text>;
+  //
+
+  useEffect(() => {
+    const fetchPigs = async () => {
+      if (!farmId) {
+        console.log("Farm ID not available. Waiting for farm data...");
+        return;
+      }
+
+      try {
+        const response = await axios.get(
+          `https://pig-farming-backend.onrender.com/api/pigs/farm/${farmId}`
+        );
+        const pigs = response.data;
+
+        setTotalPigs(pigs.length);
+        setSickPigs(pigs.filter((pig) => pig.healthStatus === "Sick").length);
+        setDeadPigs(pigs.filter((pig) => pig.healthStatus === "Dead").length);
+        setMarketReadyPigs(
+          pigs.filter(
+            (pig) =>
+              pig.healthStatus === "Good" ||
+              (pig.healthStatus !== "Sick" && pig.healthStatus !== "Vaccinated")
+          ).length
+        );
+        setNewbornPigs(
+          pigs.filter(
+            (pig) =>
+              new Date(pig.birthDate) >=
+              new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)
+          ).length
+        );
+      } catch (error) {
+        console.error(
+          "Failed to fetch pigs:",
+          error.response ? error.response.data : error.message
+        );
+        alert(
+          "Failed to fetch pigs: " +
+            (error.response ? error.response.data.message : error.message)
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPigs();
+  }, [farmId]);
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>Loading...</Text>
+      </View>
+    );
   }
 
   if (!fontsLoaded) {
@@ -261,7 +323,7 @@ export const FarmerHome = ({ route }) => {
                       color: "#29b366",
                     }}
                   >
-                    500
+                    {totalPigs.toString()}
                     <Text
                       style={{
                         fontFamily: "Poppins_800ExtraBold",
@@ -349,32 +411,32 @@ export const FarmerHome = ({ route }) => {
             <SmallContainer
               imageSource={require("../../assets/3d.jpg")}
               title="Total Pigs"
-              number="50"
+              number={totalPigs.toString()}
             />
             <SmallContainer
               imageSource={require("../../assets/pigs.png")}
               title="Sick Pigs"
-              number="50"
+              number={sickPigs.toString()}
             />
-            <SmallContainer
+            {/* <SmallContainer
               imageSource={require("../../assets/3d.jpg")}
               title="Pigs Bought"
-              number="50"
-            />
+              number={sickPigs.toString()}
+            /> */}
             <SmallContainer
               imageSource={require("../../assets/pigs.png")}
               title="Dead Pigs"
-              number="50"
+              number={deadPigs.toString()}
             />
             <SmallContainer
               imageSource={require("../../assets/3d.jpg")}
               title="Pigs ready for Market"
-              number="50"
+              number={marketReadyPigs.toString()}
             />
             <SmallContainer
               imageSource={require("../../assets/pigs.png")}
               title="New born pigs"
-              number="50"
+              number={newbornPigs.toString()}
             />
           </ScrollView>
         </View>
