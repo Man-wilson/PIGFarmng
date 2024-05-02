@@ -41,6 +41,18 @@ export const Home = () => {
   const [token, setToken] = useState();
   const [userData, setUserData] = useState();
   const [farm, setFarm] = useState();
+  const [notifications, setNotifications] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
+
+  // console.log(userData);
+
+  const unreadNotificationsCount = notifications.filter(
+    (notif) => !notif.isRead
+  ).length;
+  const readNotificationsCount = notifications.filter(
+    (notif) => notif.isRead
+  ).length;
 
   const navigation = useNavigation();
 
@@ -56,6 +68,84 @@ export const Home = () => {
 
     getUser();
   }, []);
+
+  console.log(notifications, "our notifications");
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      const storedToken = await getItemAsync("token");
+      if (!storedToken) {
+        console.error("Authorization token is not available.");
+        setIsLoading(false);
+        return;
+      }
+      setToken(storedToken);
+
+      try {
+        const response = await axios.get(
+          "https://pig-farming-backend.onrender.com/api/notifications",
+          {
+            headers: { Authorization: `Bearer ${storedToken}` },
+          }
+        );
+        setNotifications(response.data);
+        // Count unread notifications
+        const unreadCount = response.data.filter((n) => !n.isRead).length;
+        setUnreadNotifications(unreadCount);
+        setIsLoading(false);
+      } catch (error) {
+        console.error(
+          "Failed to fetch notifications:",
+          error.response ? error.response.data : error.message
+        );
+        setIsLoading(false);
+      }
+    };
+
+    fetchNotifications();
+  }, [token]);
+
+  const markNotificationAsRead = async (notificationId) => {
+    console.log(`Attempting to mark notification ${notificationId} as read`);
+    try {
+      const response = await axios.put(
+        `https://pig-farming-backend.onrender.com/api/notifications/read/${notificationId}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      // console.log("Notification status updated:", response.data);
+
+      // Update notifications and unread count atomically to ensure UI consistency
+      setNotifications((prevNotifications) => {
+        const updatedNotifications = prevNotifications.map((notif) =>
+          notif.id === notificationId ? { ...notif, isRead: true } : notif
+        );
+
+        // Update unread count based on new notifications state
+        const unreadCount = updatedNotifications.filter(
+          (n) => !n.isRead
+        ).length;
+        setUnreadNotifications(unreadCount);
+        return updatedNotifications;
+      });
+    } catch (error) {
+      console.error(
+        "Failed to update notification status:",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
+
+  useEffect(() => {
+    // console.log("Notifications updated", notifications);
+    const unreadCount = notifications.filter((n) => !n.isRead).length;
+    // console.log("Unread count", unreadCount);
+    setUnreadNotifications(unreadCount);
+  }, [notifications]);
+
+  useEffect(() => {
+    // console.log("Unread notifications count updated:", unreadNotifications);
+  }, [unreadNotifications]);
 
   if (!userData) {
     return <Text>Loading user data...</Text>;
@@ -90,12 +180,19 @@ export const Home = () => {
           <TouchableOpacity
             onPress={() => navigation.navigate("Notifications")}
           >
-            <Ionicons
-              style={styles.icon}
-              name="notifications-outline"
-              size={30}
-              color="#ffffff"
-            />
+            <View style={styles.iconContainer}>
+              <Ionicons
+                name="notifications-outline"
+                size={30}
+                color="#ffffff"
+                style={styles.icon}
+              />
+              {unreadNotifications > 0 && (
+                <View style={styles.badge}>
+                  <Text style={styles.badgeText}>{unreadNotifications}</Text>
+                </View>
+              )}
+            </View>
           </TouchableOpacity>
         </View>
         <CustomCalendar />
@@ -114,51 +211,42 @@ export const Home = () => {
           <View style={styles.lowerUpdates}>
             <View>
               <Text style={styles.lowerTexts}>Total Tasks</Text>
-              <Text style={styles.numberTasks}>4</Text>
+              <Text style={styles.numberTasks}>
+                {" "}
+                {unreadNotificationsCount}{" "}
+              </Text>
             </View>
             <View style={styles.separator}></View>
             <View>
               <Text style={styles.lowerTexts}>Completed Tasks</Text>
-              <Text style={styles.numberTasks}>14</Text>
+              <Text style={styles.numberTasks}> {readNotificationsCount} </Text>
             </View>
           </View>
         </View>
         <Text style={styles.heading}>Tasks</Text>
-        <ScrollView horizontal>
-          <View style={styles.homeView}>
-            <View style={styles.insideHome}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.homeView}
+        >
+          {notifications.map((notif, index) => (
+            <View style={styles.insideHome} key={index}>
               <HomeContainer
                 imageSource={require("../../assets/3d.jpg")}
-                title="CMU-Africa Ltd"
-                description="Gasabo-Kimironko"
-                number="+250785161514"
+                title={notif.Pig.Farm.name || "Farm Name"}
+                description={`Located in: ${
+                  notif.Pig.Farm.Location
+                    ? `${notif.Pig.Farm.Location.district}, ${notif.Pig.Farm.Location.province}`
+                    : "Unknown location"
+                }`}
+                number={
+                  notif.Pig.Farm.User
+                    ? notif.Pig.Farm.User.phoneNumber
+                    : "No contact info"
+                }
               />
             </View>
-            <View style={styles.insideHome}>
-              <HomeContainer
-                imageSource={require("../../assets/3d.jpg")}
-                title="Green Pig farming Ltd"
-                description="Gasabo-Kimironko"
-                number="+250785161514"
-              />
-            </View>
-            <View style={styles.insideHome}>
-              <HomeContainer
-                imageSource={require("../../assets/3d.jpg")}
-                title="Pig selling company Ltd"
-                description="Gasabo-Kimironko"
-                number="+250785161514"
-              />
-            </View>
-            <View style={styles.insideHome}>
-              <HomeContainer
-                imageSource={require("../../assets/3d.jpg")}
-                title="DPSD Company Ltd"
-                description="Gasabo-Kimironko"
-                number="+250785161514"
-              />
-            </View>
-          </View>
+          ))}
         </ScrollView>
       </View>
     </SafeAreaView>
@@ -217,6 +305,36 @@ const styles = ScaledSheet.create({
     borderColor: "#FFFFFF",
     textAlign: "center",
     padding: "3@s",
+  },
+  iconContainer: {
+    width: "40@s",
+    height: "40@s",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
+  },
+  icon: {
+    borderRadius: "50@s",
+    borderWidth: "2@s",
+    borderColor: "#FFFFFF",
+    textAlign: "center",
+    padding: "3@s",
+  },
+  badge: {
+    position: "absolute",
+    right: "-6@s",
+    top: "-3@s",
+    backgroundColor: "red",
+    borderRadius: "10@s",
+    width: "20@s",
+    height: "20@s",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  badgeText: {
+    color: "white",
+    fontSize: "12@s",
+    fontWeight: "bold",
   },
   containerUpdates: {
     marginVertical: "10@s",

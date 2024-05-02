@@ -61,6 +61,8 @@ export const Veterinary = () => {
     fetchUsers();
   }, []);
 
+  // console.log(users);
+
   if (isLoading) {
     return (
       <View>
@@ -68,8 +70,6 @@ export const Veterinary = () => {
       </View>
     );
   }
-
-  // console.log(userData);
 
   if (!fontsLoaded) {
     return null;
@@ -90,7 +90,7 @@ export const Veterinary = () => {
                     : require("../../assets/doctor.png")
                 }
                 title={`${vet.firstName} ${vet.lastName}`}
-                description={vet.phoneNumber}
+                description={vet.id}
                 phoneNumber={vet.phoneNumber}
               />
             </View>

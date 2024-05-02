@@ -183,7 +183,10 @@ export const CreateHealthRecords = () => {
                 }}
               />
             </View>
-            <RoundedButton text={"register a farm"} action={createHealthData} />
+            <RoundedButton
+              text={"Save Health records"}
+              action={createHealthData}
+            />
           </View>
         </ScrollView>
       </ImageBackground>

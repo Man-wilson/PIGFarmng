@@ -16,7 +16,13 @@ import {
 import { ScaledSheet } from "react-native-size-matters";
 import { MaterialIcons } from "@expo/vector-icons";
 
-export const Notification = ({ imageSource, title, description, number }) => {
+export const Notification = ({
+  imageSource,
+  title,
+  description,
+  number,
+  isRead,
+}) => {
   let [fontsLoaded] = useFonts({
     Poppins_500Medium,
     Poppins_800ExtraBold,
@@ -31,15 +37,15 @@ export const Notification = ({ imageSource, title, description, number }) => {
 
   return (
     <TouchableOpacity
-      style={styles.container}
-      onPress={() => setModalVisible(true)}
+      style={[styles.container, isRead ? styles.readStyle : styles.unreadStyle]}
+      onPress={() => {}}
     >
-      <View></View>
       <Image source={imageSource} style={styles.image} />
       <View style={styles.textContainer}>
-        <Text style={styles.text}>{title}</Text>
+        <Text style={styles.title}>{title}</Text>
         <Text style={styles.description}>{description}</Text>
         <Text style={styles.number}>{number}</Text>
+        <Text style={styles.isRead}>{isRead ? "Read" : "Unread"}</Text>
       </View>
       <MaterialIcons name="star" size={24} color="orange" style={styles.icon} />
     </TouchableOpacity>
@@ -51,7 +57,6 @@ const styles = ScaledSheet.create({
     flexDirection: "row",
     alignItems: "center",
     padding: "16@s",
-    backgroundColor: "#dbdcde",
     borderRadius: "10@s",
     elevation: 4,
     shadowColor: "#000",
@@ -71,10 +76,10 @@ const styles = ScaledSheet.create({
     flex: 1,
     paddingLeft: "10@s",
   },
-  text: {
+  title: {
     fontSize: "16@s",
     fontFamily: "Poppins_800ExtraBold",
-    color: "#28b265",
+    color: "#f0f0f0",
   },
   description: {
     fontSize: "14@s",
@@ -87,4 +92,10 @@ const styles = ScaledSheet.create({
     color: "#ffffff",
   },
   icon: {},
+  readStyle: {
+    backgroundColor: "#28b266", // Light grey for read notifications
+  },
+  unreadStyle: {
+    backgroundColor: "#87979f", // White for unread notifications
+  },
 });
