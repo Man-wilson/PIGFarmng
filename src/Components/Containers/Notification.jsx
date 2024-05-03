@@ -6,6 +6,8 @@ import {
   Image,
   Modal,
   TouchableOpacity,
+  TextInput,
+  Button,
 } from "react-native";
 import {
   useFonts,
@@ -15,6 +17,8 @@ import {
 } from "@expo-google-fonts/poppins";
 import { ScaledSheet } from "react-native-size-matters";
 import { MaterialIcons } from "@expo/vector-icons";
+import { getItemAsync } from "expo-secure-store";
+import axios from "axios";
 
 export const Notification = ({
   imageSource,
@@ -22,6 +26,8 @@ export const Notification = ({
   description,
   number,
   isRead,
+  userId,
+  pigId,
 }) => {
   let [fontsLoaded] = useFonts({
     Poppins_500Medium,
@@ -30,25 +36,63 @@ export const Notification = ({
   });
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [message, setMessage] = useState("");
 
   if (!fontsLoaded) {
     return null;
   }
 
   return (
-    <TouchableOpacity
-      style={[styles.container, isRead ? styles.readStyle : styles.unreadStyle]}
-      onPress={() => {}}
-    >
-      <Image source={imageSource} style={styles.image} />
-      <View style={styles.textContainer}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.description}>{description}</Text>
-        <Text style={styles.number}>{number}</Text>
-        <Text style={styles.isRead}>{isRead ? "Read" : "Unread"}</Text>
-      </View>
-      <MaterialIcons name="star" size={24} color="orange" style={styles.icon} />
-    </TouchableOpacity>
+    <>
+      <TouchableOpacity
+        style={[
+          styles.container,
+          isRead ? styles.readStyle : styles.unreadStyle,
+        ]}
+      >
+        <Image source={imageSource} style={styles.image} />
+        <View style={styles.textContainer}>
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.description}>{description}</Text>
+          <Text style={styles.number}>{number}</Text>
+          <Text style={styles.isRead}>{isRead ? "Read" : "Unread"}</Text>
+        </View>
+        <TouchableOpacity
+          onPress={() => setModalVisible(true)}
+          style={styles.callButton}
+        >
+          <Text style={styles.callText}>Reply</Text>
+        </TouchableOpacity>
+      </TouchableOpacity>
+
+      <Modal
+        visible={modalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Reply</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your message"
+              value={message}
+              onChangeText={setMessage}
+            />
+            <Text>User ID: {userId}</Text>
+            <Text>Pig ID: {pigId}</Text>
+            <Button title="Send" />
+            <TouchableOpacity
+              onPress={() => setModalVisible(false)}
+              style={styles.closeButton}
+            >
+              <Text style={styles.closeText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    </>
   );
 };
 
@@ -97,5 +141,50 @@ const styles = ScaledSheet.create({
   },
   unreadStyle: {
     backgroundColor: "#87979f", // White for unread notifications
+  },
+  callButton: {
+    backgroundColor: "#d88451",
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    borderRadius: 10,
+    marginTop: 10,
+    alignSelf: "center",
+  },
+  callText: {
+    color: "#fff",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    backgroundColor: "#ffffff",
+    borderRadius: "10@s",
+    padding: "20@s",
+    alignItems: "center",
+  },
+  modalTitle: {
+    fontSize: "20@s",
+    fontWeight: "bold",
+    marginBottom: "10@s",
+  },
+  input: {
+    width: "80%",
+    padding: "10@s",
+    borderRadius: "5@s",
+    borderWidth: "1@s",
+    borderColor: "#ccc",
+    marginBottom: "10@s",
+  },
+  closeButton: {
+    marginTop: "10@s",
+  },
+  closeText: {
+    color: "#d88451",
+    fontWeight: "bold",
   },
 });

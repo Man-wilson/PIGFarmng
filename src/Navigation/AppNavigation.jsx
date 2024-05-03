@@ -37,6 +37,7 @@ export const AppNavigation = () => {
   const [token, setToken] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [onboardingComplete, setOnboardingComplete] = useState(false);
+  const [splashComplete, setSplashComplete] = useState(false);
   const isLoggedIn = useSelector((state) => state.authentication.isLoggedIn);
 
   // console.log(logged, "login state");
@@ -54,28 +55,75 @@ export const AppNavigation = () => {
       }
 
       setOnboardingComplete(completed === "true");
-      setIsLoading(false);
-
-      dispatch(tokenStore(storedToken || ""));
-      setOnboardingComplete(completed === "true");
       setToken(storedToken);
       setIsLoading(false);
+
+      // dispatch(tokenStore(storedToken || ""));
+      // setOnboardingComplete(completed === "true");
+      // setToken(storedToken);
+      // setIsLoading(false);
     }
 
     initializeApp();
   }, [dispatch]);
 
-  if (isLoading) {
-    return <Splash />;
+  // if (isLoading) {
+  //   return <Splash />;
+  // }
+
+  if (!splashComplete) {
+    return <Splash onComplete={() => setSplashComplete(true)} />;
   }
 
   return (
+    // <Navigator
+    //   screenOptions={{
+    //     headerShown: false,
+    //   }}
+    // >
+    //   {!onboardingComplete ? (
+    //     <>
+    //       <Screen name="Onboarding1" component={Onboarding1} />
+    //       <Screen name="Onboarding2" component={Onboarding2} />
+    //       <Screen
+    //         name="Onboarding3"
+    //         component={Onboarding3}
+    //         initialParams={{ setOnboardingComplete }}
+    //       />
+    //     </>
+    //   ) : isLoggedIn ? (
+    //     <>
+    //       <Screen name="Main" component={MainNavigation} />
+    //       <Screen name="HealthRecords" component={HealthRecords} />
+    //       <Screen name="Notifications" component={Notifications} />
+    //       <Screen name="VetProfile" component={VetProfile} />
+    //       <Screen name="CreateFarm" component={CreateFarm} />
+    //       <Screen name="Details" component={Details} />
+    //       <Screen name="EditDeatils" component={EditDetails} />
+    //       <Screen name="Farm" component={Farm} />
+    //       <Screen name="FarmerHome" component={FarmerHome} />
+    //       <Screen name="Home" component={Home} />
+    //       <Screen name="Pigs" component={Pigs} />
+    //       <Screen name="Profile" component={Profile} />
+    //       <Screen name="Security" component={Security} />
+    //       <Screen name="Veterinary" component={Veterinary} />
+    //     </>
+    //   ) : (
+    //     <>
+    //       <Screen name="Login" component={Login} />
+    //       <Screen name="Signup" component={Register} />
+    //     </>
+    //   )}
+    // </Navigator>
+
     <Navigator
       screenOptions={{
         headerShown: false,
       }}
     >
       {!onboardingComplete ? (
+        <Screen name="Splash" component={Splash} />
+      ) : !onboardingComplete ? (
         <>
           <Screen name="Onboarding1" component={Onboarding1} />
           <Screen name="Onboarding2" component={Onboarding2} />
@@ -101,6 +149,10 @@ export const AppNavigation = () => {
           <Screen name="Profile" component={Profile} />
           <Screen name="Security" component={Security} />
           <Screen name="Veterinary" component={Veterinary} />
+          <Screen name="Splash" component={Splash} />
+          <Screen name="Onboarding1" component={Onboarding1} />
+          <Screen name="Onboarding2" component={Onboarding2} />
+          <Screen name="Onboarding3" component={Onboarding3} />
         </>
       ) : (
         <>

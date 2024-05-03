@@ -7,6 +7,7 @@ import {
   ImageBackground,
   ScrollView,
   Button,
+  TouchableOpacity,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -29,6 +30,7 @@ import { logoutUser } from "../Features/authSlice";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import { getItemAsync } from "expo-secure-store";
+import { useNavigation } from "@react-navigation/native";
 
 const Tab = createMaterialTopTabNavigator();
 const { Navigator, Screen } = Tab;
@@ -37,61 +39,6 @@ const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
 
 export const FarmerHome = ({ route }) => {
-  // const [token, setToken] = useState();
-  // const [userData, setUserData] = useState();
-  // const [farm, setFarm] = useState();
-
-  // useEffect(() => {
-  //   const getUser = async () => {
-  //     let token = await getItemAsync("token");
-  //     let user = await getItemAsync("logindata");
-  //     setToken(token);
-  //     setUserData(JSON.parse(user));
-  //   };
-
-  //   getUser();
-  // }, []);
-
-  // let [fontsLoaded] = useFonts({
-  //   Poppins_500Medium,
-  //   Poppins_800ExtraBold,
-  //   Poppins_400Regular,
-  // });
-
-  // if (!farm) {
-  //   return <Text>No farm data available, first create a farm</Text>;
-  // }
-
-  // if (!fontsLoaded) {
-  //   return null;
-  // }
-  // console.log(userData, "cccccccccccccccccccccccccccccccccccccccccccccccv");
-  // const getFarm = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       `https://pig-farming-backend.onrender.com/api/farms/user/${userData.id}`,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     );
-  //     console.log(response.data, "datatatatatatata");
-  //     setFarm(response.data);
-  //   } catch (error) {
-  //     console.error(
-  //       "Failed to get farm:",
-  //       error.response ? error.response.data : error
-  //     );
-  //   }
-
-  //   useEffect(() => {
-  //     if (userData) {
-  //       getFarm();
-  //     }
-  //   }, [userData]);
-  // };
-
   const [token, setToken] = useState();
   const [userData, setUserData] = useState();
   const [farm, setFarm] = useState();
@@ -103,6 +50,16 @@ export const FarmerHome = ({ route }) => {
   const [marketReadyPigs, setMarketReadyPigs] = useState(0);
   const [newbornPigs, setNewbornPigs] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [notifications, setNotifications] = useState([]);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
+  const navigation = useNavigation();
+
+  const unreadNotificationsCount = notifications.filter(
+    (notif) => !notif.isRead
+  ).length;
+  const readNotificationsCount = notifications.filter(
+    (notif) => notif.isRead
+  ).length;
 
   let [fontsLoaded] = useFonts({
     Poppins_500Medium,
@@ -122,37 +79,6 @@ export const FarmerHome = ({ route }) => {
 
     getUser();
   }, []);
-
-  // useEffect(() => {
-  //   const getFarm = async () => {
-  //     if (userData && token) {
-  //       try {
-  //         const response = await axios.get(
-  //           `https://pig-farming-backend.onrender.com/api/farms/user/${userData.id}`,
-  //           {
-  //             headers: {
-  //               Authorization: `Bearer ${token}`,
-  //             },
-  //           }
-  //         );
-  //         setFarm(response.data);
-  //         console.log(
-  //           response.data,
-  //           "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-  //         );
-  //       } catch (error) {
-  //         console.error(
-  //           "Failed to get farm:",
-  //           error.response ? error.response.data : error
-  //         );
-  //       }
-  //     }
-  //   };
-
-  //   getFarm();
-  // }, [userData, token]);
-
-  // console.log(farm, "+++++++++++++++++++++++++++++++");
 
   useEffect(() => {
     const getFarm = async () => {
@@ -235,6 +161,86 @@ export const FarmerHome = ({ route }) => {
     fetchPigs();
   }, [farmId]);
 
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      const storedToken = await getItemAsync("token");
+      if (!storedToken) {
+        console.error("Authorization token is not available.");
+        setIsLoading(false);
+        return;
+      }
+      setToken(storedToken);
+
+      try {
+        const response = await axios.get(
+          "https://pig-farming-backend.onrender.com/api/notifications",
+          {
+            headers: { Authorization: `Bearer ${storedToken}` },
+          }
+        );
+        setNotifications(response.data);
+        // Count unread notifications
+        const unreadCount = response.data.filter((n) => !n.isRead).length;
+        setUnreadNotifications(unreadCount);
+        setIsLoading(false);
+      } catch (error) {
+        console.error(
+          "Failed to fetch notifications:",
+          error.response ? error.response.data : error.message
+        );
+        setIsLoading(false);
+      }
+    };
+
+    fetchNotifications();
+  }, [token]);
+
+  const markNotificationAsRead = async (notificationId) => {
+    console.log(`Attempting to mark notification ${notificationId} as read`);
+    try {
+      const response = await axios.put(
+        `https://pig-farming-backend.onrender.com/api/notifications/read/${notificationId}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      // console.log("Notification status updated:", response.data);
+
+      // Update notifications and unread count atomically to ensure UI consistency
+      setNotifications((prevNotifications) => {
+        const updatedNotifications = prevNotifications.map((notif) =>
+          notif.id === notificationId ? { ...notif, isRead: true } : notif
+        );
+
+        // Update unread count based on new notifications state
+        const unreadCount = updatedNotifications.filter(
+          (n) => !n.isRead
+        ).length;
+        setUnreadNotifications(unreadCount);
+        return updatedNotifications;
+      });
+    } catch (error) {
+      console.error(
+        "Failed to update notification status:",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
+
+  useEffect(() => {
+    // console.log("Notifications updated", notifications);
+    const unreadCount = notifications.filter((n) => !n.isRead).length;
+    // console.log("Unread count", unreadCount);
+    setUnreadNotifications(unreadCount);
+  }, [notifications]);
+
+  useEffect(() => {
+    // console.log("Unread notifications count updated:", unreadNotifications);
+  }, [unreadNotifications]);
+
+  if (!userData) {
+    return <Text>Loading user data...</Text>;
+  }
+
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
@@ -267,14 +273,23 @@ export const FarmerHome = ({ route }) => {
               style={styles.image}
               source={require("../../assets/PIG FARMING2 (1).png")}
             />
-            <Ionicons
-              style={{ paddingRight: 10 }}
-              name="notifications-outline"
-              size={24}
-              color="#ffffff"
-            />
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Notifications")}
+            >
+              <Ionicons
+                style={{ paddingRight: 10 }}
+                name="notifications-outline"
+                size={24}
+                color="#ffffff"
+              />
+              {unreadNotifications > 0 && (
+                <View style={styles.badge}>
+                  <Text style={styles.badgeText}>{unreadNotifications}</Text>
+                </View>
+              )}
+            </TouchableOpacity>
           </View>
-          <View style={{ flexDirection: "row", paddingLeft: 10 }}>
+          <View style={{ flexDirection: "row" }}>
             <Text
               style={{
                 color: "#ffffff",
@@ -377,15 +392,6 @@ export const FarmerHome = ({ route }) => {
         </View>
         <View style={styles.lowerContainer}>
           <View style={styles.insideContainer}>
-            {/* <Text
-              style={{
-                fontFamily: "Poppins_500Medium",
-                fontSize: 16,
-                fontWeight: "bold",
-              }}
-            >
-              Today
-            </Text> */}
             <Text
               style={{
                 fontFamily: "Poppins_800ExtraBold",
@@ -397,15 +403,6 @@ export const FarmerHome = ({ route }) => {
             >
               Farm Insights
             </Text>
-            {/* <Text
-              style={{
-                fontFamily: "Poppins_500Medium",
-                fontSize: 16,
-                fontWeight: "bold",
-              }}
-            >
-              Updates
-            </Text> */}
           </View>
           <ScrollView>
             <SmallContainer
@@ -418,11 +415,7 @@ export const FarmerHome = ({ route }) => {
               title="Sick Pigs"
               number={sickPigs.toString()}
             />
-            {/* <SmallContainer
-              imageSource={require("../../assets/3d.jpg")}
-              title="Pigs Bought"
-              number={sickPigs.toString()}
-            /> */}
+
             <SmallContainer
               imageSource={require("../../assets/pigs.png")}
               title="Dead Pigs"
@@ -440,31 +433,6 @@ export const FarmerHome = ({ route }) => {
             />
           </ScrollView>
         </View>
-        {/* <View style={{ height: "100%" }}>
-          <Navigator
-            screenOptions={{
-              headerShown: false,
-              alignSelf: "center",
-              tabBarActiveTintColor: "#0E5A64",
-              tabBarInactiveTintColor: "#ADADAD",
-              tabBarIndicatorStyle: {
-                backgroundColor: "#0E5A64",
-                width: 30,
-                height: 4,
-                borderRadius: 5,
-                marginHorizontal: 81,
-                marginBottom: 6,
-              },
-              tabBarStyle: {
-                backgroundColor: "#F2F1F1",
-                borderBottomWidth: 1,
-                borderColor: "black",
-              },
-            }}
-          >
-            <Screen name="Home" component={FarmerHome} />
-          </Navigator>
-        </View> */}
       </View>
     </SafeAreaView>
   );
@@ -482,6 +450,7 @@ const styles = ScaledSheet.create({
   profileContainer: {
     flexDirection: "column",
     backgroundColor: "#28b265",
+    paddingHorizontal: "10@s",
   },
 
   image: {
@@ -489,9 +458,25 @@ const styles = ScaledSheet.create({
     height: "50@s",
   },
   card: {
-    paddingHorizontal: "10@s",
+    paddingHorizontal: "0@s",
     paddingVertical: "10@s",
     color: "#ffffff",
+  },
+  badge: {
+    position: "absolute",
+    right: "-6@s",
+    top: "-3@s",
+    backgroundColor: "red",
+    borderRadius: "10@s",
+    width: "20@s",
+    height: "20@s",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  badgeText: {
+    color: "white",
+    fontSize: "12@s",
+    fontWeight: "bold",
   },
   mainCard: {
     borderRadius: "10@s",

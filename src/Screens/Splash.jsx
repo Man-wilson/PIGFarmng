@@ -4,15 +4,16 @@ import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Onboarding1 } from "./Onboardind1";
 
-export const Splash = () => {
+export const Splash = ({ onComplete }) => {
   const navigation = useNavigation();
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigation.replace("Onboarding1"); // Used replace instead of navigate
-    }, 6000); // 3000 milliseconds equals 3 seconds
+      // navigation.navigate("Onboarding1");
+      onComplete();
+    }, 3000);
     return () => clearTimeout(timer);
-  }, [navigation, Onboarding1]);
+  }, [onComplete]);
 
   return (
     <SafeAreaView style={styles.container}>

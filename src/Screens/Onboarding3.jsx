@@ -109,7 +109,7 @@ import * as SecureStore from "expo-secure-store";
 import { StatusBar } from "expo-status-bar";
 
 export const Onboarding3 = ({ route, navigation }) => {
-  const { setOnboardingComplete } = route.params;
+  // const { setOnboardingComplete } = route.params;
 
   // const navigation = useNavigation();
 
