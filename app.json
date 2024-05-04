@@ -11,9 +11,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
@@ -26,14 +24,6 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [
-      [
-        "expo-updates",
-        {
-          "username": "mandelawilson"
-        }
-      ]
-    ],
     "extra": {
       "eas": {
         "projectId": "42243add-8359-4d30-8fe4-00d5f6cf0009"

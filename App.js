@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { RootNavigation } from "./src/Navigation/RootNavigation";
 import { Provider } from "react-redux";
 import { store } from "./src/Features/store";
-import * as Updates from "expo-updates";
+// import * as Updates from "expo-updates";
 import {
   useFonts,
   Poppins_500Medium,
