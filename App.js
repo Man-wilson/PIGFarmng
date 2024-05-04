@@ -1,8 +1,10 @@
+import react, { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 import { RootNavigation } from "./src/Navigation/RootNavigation";
 import { Provider } from "react-redux";
 import { store } from "./src/Features/store";
+import * as Updates from "expo-updates";
 import {
   useFonts,
   Poppins_500Medium,
@@ -22,6 +24,25 @@ export default function App() {
     Poppins_600SemiBold,
     Poppins_800ExtraBold,
   });
+
+  // async function onFetchUpdateAsync() {
+  //   try {
+  //     const update = await Updates.checkForUpdateAsync();
+
+  //     if (update.isAvailable) {
+  //       await Updates.fetchUpdateAsync();
+  //       await Updates.reloadAsync();
+  //     }
+  //   } catch (error) {
+  //     // You can also add an alert() to see the error message in case of an error when fetching updates.
+  //     alert(`Error fetching latest Expo update: ${error}`);
+  //   }
+  // }
+
+  // useEffect(() => {
+  //   onFetchUpdateAsync();
+  // }, []);
+
   if (!fontsLoaded) {
     return null;
   }

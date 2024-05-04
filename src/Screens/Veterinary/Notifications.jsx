@@ -69,8 +69,32 @@ export const Notifications = () => {
     fetchNotifications();
   }, []);
 
+  // const markNotificationAsRead = async (notificationId) => {
+  //   console.log(`Attempting to mark notification ${notificationId} as read`);
+  //   try {
+  //     const response = await axios.put(
+  //       `https://pig-farming-backend.onrender.com/api/notifications/read/${notificationId}`,
+  //       {},
+  //       { headers: { Authorization: `Bearer ${token}` } }
+  //     );
+  //     console.log("Notification status updated:", response.data);
+
+  //     const updatedNotifications = notifications.map((notif) => {
+  //       return notif.id === notificationId ? { ...notif, isRead: true } : notif;
+  //     });
+  //     setNotifications(updatedNotifications);
+
+  //     // Directly update unread notifications count
+  //     setUnreadNotifications((prevUnread) => prevUnread - 1);
+  //   } catch (error) {
+  //     console.error(
+  //       "Failed to update notification status:",
+  //       error.response ? error.response.data : error.message
+  //     );
+  //   }
+  // };
+
   const markNotificationAsRead = async (notificationId) => {
-    console.log(`Attempting to mark notification ${notificationId} as read`);
     try {
       const response = await axios.put(
         `https://pig-farming-backend.onrender.com/api/notifications/read/${notificationId}`,
@@ -94,12 +118,17 @@ export const Notifications = () => {
     }
   };
 
+  const handleNotificationPress = (notificationId, isRead) => {
+    if (!isRead) {
+      markNotificationAsRead(notificationId);
+    }
+  };
+
   useEffect(() => {
-    // console.log("Notifications updated", notifications);
     const unreadCount = notifications.filter((n) => !n.isRead).length;
     console.log("Unread count", unreadCount);
     setUnreadNotifications(unreadCount);
-  }, [notifications]); // Ensure updates to notifications update unread count
+  }, [notifications]);
 
   if (isLoading) {
     return (
@@ -128,17 +157,14 @@ export const Notifications = () => {
           data={notifications}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => markNotificationAsRead(item.id)}>
-              <View style={styles.notificationItem}>
-                <Notification
-                  imageSource={require("../../../assets/3d.jpg")}
-                  title={item.sender.username}
-                  description={item.message}
-                  number={`Pig ID: ${item.Pig.id}`}
-                  isRead={item.isRead}
-                />
-              </View>
-            </TouchableOpacity>
+            <Notification
+              imageSource={require("../../../assets/3d.jpg")}
+              title={item.sender.username}
+              description={item.message}
+              number={`Pig ID: ${item.Pig.id}`}
+              isRead={item.isRead}
+              onRead={() => handleNotificationPress(item.id, item.isRead)}
+            />
           )}
           contentContainerStyle={styles.scrollViewContent}
         />
@@ -168,9 +194,6 @@ const styles = ScaledSheet.create({
     fontFamily: "Poppins_800ExtraBold",
   },
   scrollViewContent: {
-    paddingBottom: "20@s",
-  },
-  scrollViewContent: {
     paddingBottom: "100@s",
   },
   notificationItem: {
@@ -179,30 +202,6 @@ const styles = ScaledSheet.create({
     borderBottomWidth: "1@s",
     borderBottomColor: "#ccc",
     alignItems: "center",
-  },
-  image: {
-    width: "60@s",
-    height: "60@s",
-    borderRadius: "50@s",
-  },
-  detailsContainer: {
-    flex: 1,
-    marginLeft: "10@s",
-  },
-  title: {
-    fontSize: "18@s",
-    fontWeight: "bold",
-  },
-  description: {
-    fontSize: "14@s",
-    color: "#888",
-  },
-  number: {
-    fontSize: "14@s",
-    fontWeight: "bold",
-  },
-  isRead: {
-    fontStyle: "italic",
   },
   centered: {
     flex: 1,

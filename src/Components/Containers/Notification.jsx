@@ -28,6 +28,7 @@ export const Notification = ({
   isRead,
   userId,
   pigId,
+  onRead,
 }) => {
   let [fontsLoaded] = useFonts({
     Poppins_500Medium,
@@ -37,6 +38,15 @@ export const Notification = ({
 
   const [modalVisible, setModalVisible] = useState(false);
   const [message, setMessage] = useState("");
+  const [showFullMessage, setShowFullMessage] = useState(false);
+  const [userData, setUserData] = useState();
+  const [token, setToken] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+
+  const handlePress = () => {
+    setShowFullMessage(!showFullMessage);
+    onRead();
+  };
 
   if (!fontsLoaded) {
     return null;
@@ -49,49 +59,24 @@ export const Notification = ({
           styles.container,
           isRead ? styles.readStyle : styles.unreadStyle,
         ]}
+        onPress={handlePress}
       >
         <Image source={imageSource} style={styles.image} />
         <View style={styles.textContainer}>
           <Text style={styles.title}>{title}</Text>
-          <Text style={styles.description}>{description}</Text>
+          <Text
+            style={styles.description}
+            numberOfLines={showFullMessage ? null : 2}
+          >
+            {description}
+          </Text>
+          {!showFullMessage && description.split(" ").length > 10 && (
+            <Text style={styles.readMore}>Read More...</Text>
+          )}
           <Text style={styles.number}>{number}</Text>
           <Text style={styles.isRead}>{isRead ? "Read" : "Unread"}</Text>
         </View>
-        <TouchableOpacity
-          onPress={() => setModalVisible(true)}
-          style={styles.callButton}
-        >
-          <Text style={styles.callText}>Reply</Text>
-        </TouchableOpacity>
       </TouchableOpacity>
-
-      <Modal
-        visible={modalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Reply</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter your message"
-              value={message}
-              onChangeText={setMessage}
-            />
-            <Text>User ID: {userId}</Text>
-            <Text>Pig ID: {pigId}</Text>
-            <Button title="Send" />
-            <TouchableOpacity
-              onPress={() => setModalVisible(false)}
-              style={styles.closeButton}
-            >
-              <Text style={styles.closeText}>Close</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
     </>
   );
 };
@@ -129,6 +114,10 @@ const styles = ScaledSheet.create({
     fontSize: "14@s",
     fontFamily: "Poppins_800ExtraBold",
     color: "#000000",
+  },
+  readMore: {
+    color: "#0066cc",
+    fontWeight: "bold",
   },
   number: {
     fontSize: "12@s",
