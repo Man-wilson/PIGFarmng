@@ -11,7 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -19,21 +21,23 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.mandelawilson.pigfarming"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "42243add-8359-4d30-8fe4-00d5f6cf0009"
-      }
     },
     "runtimeVersion": {
       "policy": "appVersion"
     },
     "updates": {
       "url": "https://u.expo.dev/42243add-8359-4d30-8fe4-00d5f6cf0009"
+    },
+    "owner": "mandelawilson",
+    "extra": {
+      "eas": {
+        "projectId": "42243add-8359-4d30-8fe4-00d5f6cf0009"
+      }
     }
   }
 }
