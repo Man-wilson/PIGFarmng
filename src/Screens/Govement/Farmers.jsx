@@ -1,66 +1,142 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, View, Text, StyleSheet } from "react-native";
+import { View, Text, ScrollView, StyleSheet, SafeAreaView } from "react-native";
+import { getItemAsync } from "expo-secure-store";
 import axios from "axios";
 
 export const Farmers = () => {
   const [users, setUsers] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [token, setToken] = useState();
-  const [error, setError] = useState(null);
+  const [farms, setFarms] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchUsersByRoleId = async () => {
+    const fetchUsers = async () => {
       try {
-        const response = await axios.get(
-          "https://pig-farming-backend.onrender.com/api/users/role/2"
+        const token = await getItemAsync("token");
+        const response = await fetch(
+          "https://pig-farming-backend.onrender.com/api/users/role/2",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
-        setUsers(response.data);
-      } catch (err) {
-        setError(err.message);
-        console.error("Error fetching users:", err);
+        const data = await response.json();
+        setUsers(data);
+      } catch (error) {
+        console.error("Failed to fetch users:", error);
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
     };
 
-    fetchUsersByRoleId();
+    fetchUsers();
   }, []);
 
-  if (isLoading) return <Text>Loading...</Text>;
-  if (error) return <Text>Error: {error}</Text>;
+  useEffect(() => {
+    const fetchFarms = async () => {
+      try {
+        const response = await axios.get(
+          "https://pig-farming-backend.onrender.com/api/farms"
+        );
+        const chartData = response.data.map((farm, index) => ({
+          value: farm.size || 0,
+          label: `${index + 1}`,
+        }));
+        setFarms(chartData);
+      } catch (error) {
+        console.error(
+          "Failed to fetch farms:",
+          error.response ? error.response.data : error.message
+        );
+      }
+    };
+
+    fetchFarms();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.centered}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.header}>Users with Role ID 2</Text>
-      {users.map((user) => (
-        <View key={user.id} style={styles.userContainer}>
-          <Text>Username: {user.username}</Text>
-          <Text>Email: {user.email}</Text>
-          <Text>
-            Name: {user.firstName} {user.lastName}
-          </Text>
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView style={styles.container}>
+        <Text style={styles.header}>Users</Text>
+        <View style={styles.table}>
+          <View style={styles.row}>
+            <Text style={styles.cellHeader}>Username</Text>
+            <Text style={styles.cellHeader}>Email</Text>
+            <Text style={styles.cellHeader}>ID</Text>
+          </View>
+          {users.map((user, index) => (
+            <View key={user.id} style={styles.row}>
+              <Text style={styles.cell}>{user.username}</Text>
+              <Text style={styles.cell}>{user.email}</Text>
+              <Text style={styles.cell}>{user.id}</Text>
+            </View>
+          ))}
         </View>
-      ))}
-    </ScrollView>
+
+        <Text style={styles.header}>Farms</Text>
+        <View style={styles.table}>
+          {farms.map((farm, index) => (
+            <View key={index} style={styles.row}>
+              <Text style={styles.cellHeader}>Farm Label</Text>
+              <Text style={styles.cellHeader}>Size</Text>
+              <Text style={styles.cellHeader}>ID</Text>
+              <Text style={styles.cell}>{farm.label}</Text>
+              <Text style={styles.cell}>{farm.value}</Text>
+              <Text style={styles.cell}>{index + 1}</Text>
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: "#ffffff", // Adjust the background color as needed
+    marginBottom: 250,
+  },
+  centered: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   header: {
-    fontSize: 22,
     fontWeight: "bold",
-    marginBottom: 20,
+    fontSize: 18,
     textAlign: "center",
+    marginTop: 20,
   },
-  userContainer: {
-    marginBottom: 15,
+  table: {
+    margin: 10,
+    borderWidth: 1,
+    borderColor: "#ddd",
+  },
+  row: {
+    flexDirection: "row",
+    borderBottomWidth: 1,
+    borderColor: "#ddd",
+    backgroundColor: "#f9f9f9",
+  },
+  cellHeader: {
+    flex: 1,
     padding: 10,
-    backgroundColor: "#f0f0f0", // Light grey background for each user
-    borderRadius: 5,
+    fontWeight: "bold",
+    backgroundColor: "#eee",
+  },
+  cell: {
+    flex: 1,
+    padding: 10,
   },
 });
