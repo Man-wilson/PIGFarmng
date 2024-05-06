@@ -82,7 +82,7 @@ export const Farmers = () => {
         </View>
 
         <Text style={styles.header}>Farms</Text>
-        {/* <View style={styles.table}>
+        <View style={styles.table}>
           {farms.map((farm, index) => (
             <View key={index} style={styles.row}>
               <Text style={styles.cellHeader}>Farm Label</Text>
@@ -93,7 +93,7 @@ export const Farmers = () => {
               <Text style={styles.cell}>{index + 1}</Text>
             </View>
           ))}
-        </View> */}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
