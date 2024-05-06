@@ -125,6 +125,7 @@ export const Pigs = () => {
       if (response.status === 201) {
         // Display a success message
         alert("Pig created successfully.");
+        // setData((prev) => [...prev, response.data]);
 
         navigation.navigate("FarmerHome");
 

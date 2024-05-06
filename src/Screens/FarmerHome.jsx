@@ -254,7 +254,43 @@ export const FarmerHome = ({ route }) => {
   }
 
   if (!farm) {
-    return <Text>No farm data available, please create a farm first.</Text>;
+    return (
+      <View style={{ backgroundColor: "#ffffff", flex: 1 }}>
+        <View>
+          {/* <Text
+            style={{
+              fontFamily: "Poppins_800ExtraBold",
+              fontSize: 40,
+              textAlign: "center",
+              marginVertical: 10,
+              color: "#28b266",
+            }}
+          >
+            PIG FARMING
+          </Text> */}
+          <Image
+            style={{
+              width: 200,
+              height: 200,
+              alignSelf: "center",
+              marginTop: 100,
+            }}
+            source={require("../../assets/Pig Farming APP ICON (1).png")}
+          />
+          <Text
+            style={{
+              fontFamily: "Poppins_800ExtraBold",
+              fontSize: 20,
+              textAlign: "center",
+              marginVertical: 20,
+              // color: "#28b266",
+            }}
+          >
+            Please you don't have any farm data, first create a farm.
+          </Text>
+        </View>
+      </View>
+    );
   }
 
   return (

@@ -17,11 +17,11 @@ export const authSlice = createSlice({
   reducers: {
     startLoading: (state) => {
       state.isLoading = true;
-      state.error = null; // Clear errors when new loading starts
+      state.error = null;
     },
     endLoading: (state, action) => {
       state.isLoading = false;
-      state.error = action.payload; // Store error information
+      state.error = action.payload;
     },
     loginSuccess: (state, action) => {
       state.userData = action.payload;
@@ -66,11 +66,6 @@ export const loginUser = (data) => async (dispatch) => {
       data,
       { timeout: 60000 } // 60 seconds timeout
     );
-
-    // console.log(
-    //   data,
-    //   "zzzzzzzzzzzzzzzzzzzzzzzzzzzz++++++++++++++++++++++++++++++++"
-    // );
 
     const token = response.data.token;
     const userData = response.data.user;

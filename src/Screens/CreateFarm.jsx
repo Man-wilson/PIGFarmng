@@ -6,6 +6,7 @@ import {
   ScrollView,
   Dimensions,
   ImageBackground,
+  Alert,
 } from "react-native";
 import { ScaledSheet } from "react-native-size-matters";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -42,6 +43,16 @@ export const CreateFarm = () => {
     userId: null,
   });
 
+  const [location, setLocation] = useState({
+    latitude: "",
+    longitude: "",
+    address: "",
+    province: "",
+    district: "",
+    sector: "",
+    zipCode: "",
+  });
+
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -53,7 +64,7 @@ export const CreateFarm = () => {
       });
   }, [userData]);
 
-  console.log(data, "farmmmmmmmmm");
+  // console.log(data, "farmmmmmmmmm");
 
   useEffect(() => {
     const getUser = async () => {
@@ -74,6 +85,26 @@ export const CreateFarm = () => {
     );
   }
 
+  const createLocation = async () => {
+    try {
+      const response = await axios.post(
+        "https://pig-farming-backend.onrender.com/api/locations",
+        location,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response.location, "location");
+    } catch (error) {
+      console.error(
+        "Failed to create farm:",
+        error.response ? error.response.location : error
+      );
+    }
+  };
+
   const createFarmer = async () => {
     try {
       const response = await axios.post(
@@ -90,7 +121,22 @@ export const CreateFarm = () => {
         "Responseeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
       );
       if (response.status === 201) {
-        navigation.popToTop();
+        Alert("Farm was created successfully.");
+        setData((prevData) => [...prevData, response.data]);
+        navigation.navigate("FarmerHome");
+
+        setData({
+          name: "",
+          size: "",
+          owner: "",
+          phone: "",
+          province: "",
+          district: "",
+          sector: "",
+          zipCode: "",
+          locationId: null,
+          userId: null,
+        });
 
         // navigation.reset({
         //   index: 0,
@@ -116,7 +162,7 @@ export const CreateFarm = () => {
         <View>
           <Text style={styles.Title}>Create a farm</Text>
         </View>
-        <ScrollView>
+        <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <View style={styles.Container}>
             <View style={styles.textInputs}>
               <AddTextField
@@ -213,10 +259,14 @@ const styles = ScaledSheet.create({
     padding: "0@s",
     height: height,
     width: width,
-    marginBottom: "10@s",
+    // marginBottom: "10@s",
     alignItems: "center",
     // justifyContent: "center",
     // backgroundColor: "white",
+    flex: 1,
+  },
+  scrollViewContent: {
+    paddingBottom: "80@s",
   },
   backgroundImage: {
     flex: 1,

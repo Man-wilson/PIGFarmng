@@ -108,15 +108,15 @@ import { useNavigation } from "@react-navigation/native";
 import * as SecureStore from "expo-secure-store";
 import { StatusBar } from "expo-status-bar";
 
-export const Onboarding3 = ({ route, navigation }) => {
+export const Onboarding3 = ({ route }) => {
   // const { setOnboardingComplete } = route.params;
 
-  // const navigation = useNavigation();
+  const navigation = useNavigation();
 
   // Onboarding3.js
   const handleGetStarted = async () => {
     await SecureStore.setItemAsync("onboardingComplete", "true");
-    navigation.replace("Login");
+    navigation.navigate("Login");
   };
 
   const screenIndex = 2; // Current screen index

@@ -25,6 +25,8 @@ import { Notifications } from "../Screens/Veterinary/Notifications";
 import { HealthRecords } from "../Screens/Veterinary/HealthRecords";
 import { VetProfile } from "../Screens/Veterinary/VetProfile";
 import { CreateHealthRecords } from "../Screens/Veterinary/CreateHealthRecords";
+import { GovHome } from "../Screens/Govement/GovHome";
+import { GovProfile } from "../Screens/Govement/GovProfile";
 
 const Tabs = createBottomTabNavigator();
 const { Navigator, Screen } = Tabs;
@@ -79,7 +81,13 @@ export const MainNavigation = () => {
         }}
         name="FarmerHome"
         component={
-          roleId === 2 ? FarmerHome : roleId === 3 ? Home : Onboarding1
+          roleId === 2
+            ? FarmerHome
+            : roleId === 3
+            ? Home
+            : roleId === 4
+            ? GovHome
+            : Onboarding1
         }
       />
       <Screen
@@ -131,7 +139,13 @@ export const MainNavigation = () => {
         }}
         name="Profile"
         component={
-          roleId === 2 ? Profile : roleId === 3 ? VetProfile : Onboarding1
+          roleId === 2
+            ? Profile
+            : roleId === 3
+            ? VetProfile
+            : roleId === 4
+            ? GovProfile
+            : Onboarding1
         }
       />
     </Navigator>
