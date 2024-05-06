@@ -82,7 +82,7 @@ export const Farmers = () => {
         </View>
 
         <Text style={styles.header}>Farms</Text>
-        <View style={styles.table}>
+        {/* <View style={styles.table}>
           {farms.map((farm, index) => (
             <View key={index} style={styles.row}>
               <Text style={styles.cellHeader}>Farm Label</Text>
@@ -93,7 +93,7 @@ export const Farmers = () => {
               <Text style={styles.cell}>{index + 1}</Text>
             </View>
           ))}
-        </View>
+        </View> */}
       </ScrollView>
     </SafeAreaView>
   );
@@ -118,25 +118,25 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 20,
   },
-  // table: {
-  //   margin: 10,
-  //   borderWidth: 1,
-  //   borderColor: "#ddd",
-  // },
-  // row: {
-  //   flexDirection: "row",
-  //   borderBottomWidth: 1,
-  //   borderColor: "#ddd",
-  //   backgroundColor: "#f9f9f9",
-  // },
-  // cellHeader: {
-  //   flex: 1,
-  //   padding: 10,
-  //   fontWeight: "bold",
-  //   backgroundColor: "#eee",
-  // },
-  // cell: {
-  //   flex: 1,
-  //   padding: 10,
-  // },
+  table: {
+    margin: 10,
+    borderWidth: 1,
+    borderColor: "#ddd",
+  },
+  row: {
+    flexDirection: "row",
+    borderBottomWidth: 1,
+    borderColor: "#ddd",
+    backgroundColor: "#f9f9f9",
+  },
+  cellHeader: {
+    flex: 1,
+    padding: 10,
+    fontWeight: "bold",
+    backgroundColor: "#eee",
+  },
+  cell: {
+    flex: 1,
+    padding: 10,
+  },
 });
