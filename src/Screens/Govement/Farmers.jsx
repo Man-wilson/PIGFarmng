@@ -118,25 +118,25 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 20,
   },
-  table: {
-    margin: 10,
-    borderWidth: 1,
-    borderColor: "#ddd",
-  },
-  row: {
-    flexDirection: "row",
-    borderBottomWidth: 1,
-    borderColor: "#ddd",
-    backgroundColor: "#f9f9f9",
-  },
-  cellHeader: {
-    flex: 1,
-    padding: 10,
-    fontWeight: "bold",
-    backgroundColor: "#eee",
-  },
-  cell: {
-    flex: 1,
-    padding: 10,
-  },
+  // table: {
+  //   margin: 10,
+  //   borderWidth: 1,
+  //   borderColor: "#ddd",
+  // },
+  // row: {
+  //   flexDirection: "row",
+  //   borderBottomWidth: 1,
+  //   borderColor: "#ddd",
+  //   backgroundColor: "#f9f9f9",
+  // },
+  // cellHeader: {
+  //   flex: 1,
+  //   padding: 10,
+  //   fontWeight: "bold",
+  //   backgroundColor: "#eee",
+  // },
+  // cell: {
+  //   flex: 1,
+  //   padding: 10,
+  // },
 });
