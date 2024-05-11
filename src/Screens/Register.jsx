@@ -71,6 +71,15 @@ export const Register = () => {
 
   // console.log("Registering user with data:", userData);
 
+  // const handleError = (error) => {
+  //   const errorMessage = error.response
+  //     ? error.response.data.message
+  //     : error.message;
+  //   Alert.alert("Error", errorMessage);
+  //   // Uncomment the next line if you want to log errors only in development mode
+  //   // if (__DEV__) console.error("Error:", errorMessage);
+  // };
+
   const handleInputChange = (name, value) => {
     if (name === "roleId") {
       value = roleMappings[value];
@@ -93,10 +102,10 @@ export const Register = () => {
         navigation.goBack();
       }
     } catch (error) {
-      console.error(
-        "Failed to register user:",
-        error.response ? error.response.data : error
-      );
+      // console.error(
+      //   "Failed to register user:",
+      //   error.response ? error.response.data : error
+      // );
       Alert.alert("Error", "Failed to register user.");
     }
   };

@@ -67,7 +67,8 @@ export const Login = () => {
         setPassword("");
       })
       .catch((error) => {
-        console.error("Login failed:", error);
+        // console.error("Login failed:", error);
+        Alert.alert("Login Error", "You used wrong credentials.");
       });
   };
 

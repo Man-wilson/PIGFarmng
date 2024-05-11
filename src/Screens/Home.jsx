@@ -210,7 +210,7 @@ export const Home = () => {
           </View>
           <View style={styles.lowerUpdates}>
             <View>
-              <Text style={styles.lowerTexts}>Total Tasks</Text>
+              <Text style={styles.lowerTexts}>Current Tasks</Text>
               <Text style={styles.numberTasks}>
                 {" "}
                 {unreadNotificationsCount}{" "}
@@ -224,30 +224,45 @@ export const Home = () => {
           </View>
         </View>
         <Text style={styles.heading}>Tasks</Text>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.homeView}
-        >
-          {notifications.map((notif, index) => (
-            <View style={styles.insideHome} key={index}>
-              <HomeContainer
-                imageSource={require("../../assets/3d.jpg")}
-                title={notif.Pig.Farm.name || "Farm Name"}
-                description={`Located in: ${
-                  notif.Pig.Farm.Location
-                    ? `${notif.Pig.Farm.Location.district}, ${notif.Pig.Farm.Location.province}`
-                    : "Unknown location"
-                }`}
-                number={
-                  notif.Pig.Farm.User
-                    ? notif.Pig.Farm.User.phoneNumber
-                    : "No contact info"
-                }
-              />
-            </View>
-          ))}
-        </ScrollView>
+        {notifications.length > 0 ? (
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.homeView}
+          >
+            {notifications.map((notif, index) => (
+              <View style={styles.insideHome} key={index}>
+                <HomeContainer
+                  imageSource={require("../../assets/3d.jpg")}
+                  title={notif.Pig.Farm.name || "Farm Name"}
+                  description={`Located in: ${
+                    notif.Pig.Farm.Location
+                      ? `${notif.Pig.Farm.Location.district}, ${notif.Pig.Farm.Location.province}`
+                      : "Unknown location"
+                  }`}
+                  number={
+                    notif.Pig.Farm.User
+                      ? notif.Pig.Farm.User.phoneNumber
+                      : "No contact info"
+                  }
+                />
+              </View>
+            ))}
+          </ScrollView>
+        ) : (
+          <View style={styles.centered}>
+            <Text
+              style={{
+                fontSize: 16,
+                fontFamily: "Poppins_800ExtraBold",
+                textAlign: "center",
+                marginVertical: 60,
+              }}
+            >
+              Currently, you're off from tasks.
+            </Text>
+          </View>
+        )}
       </View>
     </SafeAreaView>
   );

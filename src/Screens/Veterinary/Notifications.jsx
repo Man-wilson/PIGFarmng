@@ -109,7 +109,9 @@ export const Notifications = () => {
       setNotifications(updatedNotifications);
 
       // Directly update unread notifications count
-      setUnreadNotifications((prevUnread) => prevUnread - 1);
+      setUnreadNotifications((prevUnread) =>
+        prevUnread > 0 ? prevUnread - 1 : 0
+      );
     } catch (error) {
       console.error(
         "Failed to update notification status:",
@@ -153,21 +155,35 @@ export const Notifications = () => {
           <Text style={styles.headerTitle}>Notifications</Text>
           <Ionicons name="notifications" size={24} color="black" />
         </View>
-        <FlatList
-          data={notifications}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <Notification
-              imageSource={require("../../../assets/3d.jpg")}
-              title={item.sender.username}
-              description={item.message}
-              number={`Pig ID: ${item.Pig.id}`}
-              isRead={item.isRead}
-              onRead={() => handleNotificationPress(item.id, item.isRead)}
-            />
-          )}
-          contentContainerStyle={styles.scrollViewContent}
-        />
+        {notifications.length > 0 ? (
+          <FlatList
+            data={notifications}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <Notification
+                imageSource={require("../../../assets/3d.jpg")}
+                title={item.sender.username}
+                description={item.message}
+                number={`Pig ID: ${item.Pig.id}`}
+                isRead={item.isRead}
+                onRead={() => handleNotificationPress(item.id, item.isRead)}
+              />
+            )}
+            contentContainerStyle={styles.scrollViewContent}
+          />
+        ) : (
+          <View style={styles.centered}>
+            <Text
+              style={{
+                fontFamily: "Poppins_800ExtraBold",
+                fontSize: 16,
+                textAlign: "center",
+              }}
+            >
+              Currently, you don't have any pending notifications.
+            </Text>
+          </View>
+        )}
       </View>
     </SafeAreaView>
   );

@@ -9,6 +9,7 @@ import {
   Poppins_400Regular,
   Poppins_800ExtraBold,
 } from "@expo-google-fonts/poppins";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const width = Dimensions.get("window").width;
 
@@ -59,49 +60,59 @@ export const Farms = () => {
   }
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.contentContainer}
-    >
-      <Text style={styles.header}>The Size Of Farms</Text>
-      {/* <Text style={styles.title}>The Size of Farms</Text> */}
-      <LineChart
-        data={farms}
-        isAnimated
-        thickness={3}
-        color="#07BAD1"
-        width={width - 40}
-        height={300}
-        maxValue={250}
-        noOfSections={5}
-        animateOnDataChange
-        animationDuration={1000}
-        onDataChangeAnimationDuration={300}
-        areaChart
-        startFillColor={"rgb(84,219,234)"}
-        endFillColor={"rgb(84,219,234)"}
-        startOpacity={0.4}
-        endOpacity={0.1}
-        spacing={50}
-        backgroundColor="#414141"
-        rulesColor="gray"
-        rulesType="solid"
-        initialSpacing={30}
-        yAxisColor="lightgray"
-        xAxisColor="lightgray"
-        xAxisLabelText="Size (acres)"
-        yAxisLabelText="Users"
-        hideDataPoints
-      />
-      <Legend />
-    </ScrollView>
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView
+        style={styles.container}
+        // contentContainerStyle={{ marginBottom: 100, paddingHorizontal: 10 }}
+        showsVerticalScrollIndicator={true} // Ensure scroll indicators are visible
+      >
+        <Text style={styles.header}>The Size Of Farms</Text>
+        <LineChart
+          data={farms}
+          isAnimated
+          thickness={3}
+          color="#07BAD1"
+          width={width - 40}
+          height={300}
+          maxValue={250}
+          noOfSections={5}
+          animateOnDataChange
+          animationDuration={1000}
+          onDataChangeAnimationDuration={300}
+          areaChart
+          startFillColor="rgba(84,219,234,0.4)" // More subtle gradient
+          endFillColor="rgba(84,219,234,0.1)"
+          startOpacity={0.4}
+          endOpacity={0.1}
+          spacing={50}
+          backgroundColor="#414141"
+          rulesColor="gray"
+          rulesType="solid"
+          initialSpacing={30}
+          yAxisColor="lightgray"
+          xAxisColor="lightgray"
+          xAxisLabelText="Size (acres)"
+          yAxisLabelText="Users"
+          hideDataPoints={false}
+          pointLabelYOffset={-10}
+          pointLabelColor="#fff"
+          dotColor="white"
+          showVerticalLines={true}
+          verticalLinesColor="rgba(255,255,255,0.5)"
+        />
+        <Legend />
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    backgroundColor: "#ffffff",
+    marginBottom: 250,
   },
   contentContainer: {
     paddingBottom: 40,

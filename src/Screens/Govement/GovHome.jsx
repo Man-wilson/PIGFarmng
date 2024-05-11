@@ -29,6 +29,23 @@ export const GovHome = () => {
     Poppins_400Regular,
   });
 
+  const [token, setToken] = useState();
+  const [userData, setUserData] = useState();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const tokenStored = await getItemAsync("token");
+      const userDataStored = await getItemAsync("logindata");
+      if (userDataStored) {
+        setUserData(JSON.parse(userDataStored));
+      }
+      setToken(tokenStored);
+    };
+
+    getUser();
+  }, []);
+
   if (!fontsLoaded) {
     return null;
   }
@@ -45,7 +62,7 @@ export const GovHome = () => {
             />
             <Text style={styles.names}>
               <Text style={styles.hiStyle}>Hi </Text>
-              Minister Yann
+              {userData?.firstName} {userData?.lastName}
             </Text>
           </View>
         </View>
@@ -121,10 +138,12 @@ const styles = ScaledSheet.create({
     fontFamily: "Poppins_800ExtraBold",
     fontSize: "20@s",
     marginLeft: "16@s",
+    color: "#ffffff",
   },
   hiStyle: {
     fontFamily: "Poppins_500Medium",
     fontSize: "16@s",
+    color: "#000000",
   },
   lowerContainer: {
     padding: "10@s",

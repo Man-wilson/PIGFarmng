@@ -162,6 +162,13 @@ export const FarmerHome = ({ route }) => {
   }, [farmId]);
 
   useEffect(() => {
+    if (route.params?.pigCreated) {
+      // Fetch the latest pigs data
+      fetchPigs();
+    }
+  }, [route.params?.pigCreated]);
+
+  useEffect(() => {
     const fetchNotifications = async () => {
       const storedToken = await getItemAsync("token");
       if (!storedToken) {
@@ -393,7 +400,7 @@ export const FarmerHome = ({ route }) => {
                       fontSize: 17,
                     }}
                   >
-                    Location
+                    farm ID
                   </Text>
                   <Text
                     style={{
@@ -401,7 +408,7 @@ export const FarmerHome = ({ route }) => {
                       fontSize: 12,
                     }}
                   >
-                    Kimironko
+                    {farm.id}
                   </Text>
                 </View>
                 <View style={styles.cardData}>
