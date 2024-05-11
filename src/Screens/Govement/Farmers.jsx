@@ -10,7 +10,6 @@ export const Farmers = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      setLoading(true);
       try {
         const token = await getItemAsync("token");
         const response = await fetch(
@@ -22,17 +21,12 @@ export const Farmers = () => {
           }
         );
         const data = await response.json();
-        if (Array.isArray(data)) {
-          setUsers(data);
-        } else {
-          console.error("Data fetched is not an array:", data);
-          setUsers([]);
-        }
+        setUsers(data);
       } catch (error) {
         console.error("Failed to fetch users:", error);
-        setUsers([]);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     fetchUsers();
