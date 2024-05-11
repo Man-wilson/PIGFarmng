@@ -1,0 +1,41 @@
+{
+  "expo": {
+    "name": "PigFarming",
+    "slug": "pig-farming",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/Pig Farming APP ICON (1).png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/PIG FARMING2 (1).jpg",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "42243add-8359-4d30-8fe4-00d5f6cf0009"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/42243add-8359-4d30-8fe4-00d5f6cf0009"
+    }
+  }
+}
