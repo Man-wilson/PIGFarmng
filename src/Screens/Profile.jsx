@@ -79,7 +79,7 @@ export const Profile = () => {
           <MaterialIcons
             style={styles.image}
             name="account-circle"
-            size={90}
+            size={30}
             color="#2381a2"
           />
         </View>
@@ -145,14 +145,14 @@ const styles = ScaledSheet.create({
     paddingHorizontal: "10@s",
     alignSelf: "center",
   },
-  image: {
-    borderRadius: "50@s",
-    width: "90@s",
-    height: "90@s",
-    borderWidth: "10@s",
-    borderColor: "#ffffff",
-    alignSelf: "center",
-  },
+  // image: {
+  //   borderRadius: "50@s",
+  //   width: "40@s",
+  //   height: "40@s",
+  //   borderWidth: "10@s",
+  //   borderColor: "#ffffff",
+  //   alignSelf: "center",
+  // },
   NamesSection: {
     alignSelf: "center",
     paddingHorizontal: "10@s",

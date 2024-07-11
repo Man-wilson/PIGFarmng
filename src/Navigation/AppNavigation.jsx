@@ -82,15 +82,13 @@ export const AppNavigation = () => {
         headerShown: false,
       }}
     >
-      {!onboardingComplete ? (
+      {!splashComplete ? (
+        <Screen name="Splash" component={Splash} />
+      ) : !onboardingComplete ? (
         <>
           <Screen name="Onboarding1" component={Onboarding1} />
           <Screen name="Onboarding2" component={Onboarding2} />
-          <Screen
-            name="Onboarding3"
-            component={Onboarding3}
-            initialParams={{ setOnboardingComplete }}
-          />
+          <Screen name="Onboarding3" component={Onboarding3} />
         </>
       ) : isLoggedIn ? (
         <>
@@ -100,7 +98,7 @@ export const AppNavigation = () => {
           <Screen name="VetProfile" component={VetProfile} />
           <Screen name="CreateFarm" component={CreateFarm} />
           <Screen name="Details" component={Details} />
-          <Screen name="EditDeatils" component={EditDetails} />
+          <Screen name="EditDetails" component={EditDetails} />
           <Screen name="Farm" component={Farm} />
           <Screen name="FarmerHome" component={FarmerHome} />
           <Screen name="Home" component={Home} />
@@ -108,7 +106,6 @@ export const AppNavigation = () => {
           <Screen name="Profile" component={Profile} />
           <Screen name="Security" component={Security} />
           <Screen name="Veterinary" component={Veterinary} />
-          {/* <Screen name="Login" component={Login} /> */}
         </>
       ) : (
         <>
@@ -117,51 +114,5 @@ export const AppNavigation = () => {
         </>
       )}
     </Navigator>
-
-    // <Navigator
-    //   screenOptions={{
-    //     headerShown: false,
-    //   }}
-    // >
-    //   {!onboardingComplete ? (
-    //     <Screen name="Splash" component={Splash} />
-    //   ) : !onboardingComplete ? (
-    //     <>
-    //       <Screen name="Onboarding1" component={Onboarding1} />
-    //       <Screen name="Onboarding2" component={Onboarding2} />
-    //       <Screen
-    //         name="Onboarding3"
-    //         component={Onboarding3}
-    //         initialParams={{ setOnboardingComplete }}
-    //       />
-    //     </>
-    //   ) : isLoggedIn ? (
-    //     <>
-    //       <Screen name="Main" component={MainNavigation} />
-    //       <Screen name="HealthRecords" component={HealthRecords} />
-    //       <Screen name="Notifications" component={Notifications} />
-    //       <Screen name="VetProfile" component={VetProfile} />
-    //       <Screen name="CreateFarm" component={CreateFarm} />
-    //       <Screen name="Details" component={Details} />
-    //       <Screen name="EditDeatils" component={EditDetails} />
-    //       <Screen name="Farm" component={Farm} />
-    //       <Screen name="FarmerHome" component={FarmerHome} />
-    //       <Screen name="Home" component={Home} />
-    //       <Screen name="Pigs" component={Pigs} />
-    //       <Screen name="Profile" component={Profile} />
-    //       <Screen name="Security" component={Security} />
-    //       <Screen name="Veterinary" component={Veterinary} />
-    //       <Screen name="Splash" component={Splash} />
-    //       <Screen name="Onboarding1" component={Onboarding1} />
-    //       <Screen name="Onboarding2" component={Onboarding2} />
-    //       <Screen name="Onboarding3" component={Onboarding3} />
-    //     </>
-    //   ) : (
-    //     <>
-    //       <Screen name="Login" component={Login} />
-    //       <Screen name="Signup" component={Register} />
-    //     </>
-    //   )}
-    // </Navigator>
   );
 };
